@@ -1,0 +1,5 @@
+charts/*
+.idea
+.git
+*.tgz
+Chart.lock

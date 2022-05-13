@@ -1,0 +1,9 @@
+apiVersion: v2
+name: vyne
+description: A Helm chart for Vyne
+maintainers:
+  - name: andrewgkew
+    email: andrew@quadcorps.co.uk
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
