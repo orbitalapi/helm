@@ -3,3 +3,4 @@ charts/*
 .git
 *.tgz
 Chart.lock
+compose/orbital

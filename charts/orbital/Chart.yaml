@@ -1,6 +1,6 @@
 apiVersion: v2
-name: vyne
-description: A Helm chart for Vyne
+name: orbital
+description: A Helm chart for Orbital
 maintainers:
   - name: andrewgkew
     email: andrew@quadcorps.co.uk
