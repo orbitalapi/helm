@@ -1,4 +1,4 @@
-charts/*
+charts/orbital/charts
 .idea
 .git
 *.tgz
