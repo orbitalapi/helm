@@ -1,5 +1,7 @@
+#use this to override the namespace other than the helm release
+namespace: ""
+
 orbital:
-  namespace: orbital
   environment:
     OPTIONS: >-
       --vyne.analytics.mode=InProcess
@@ -48,7 +50,6 @@ orbital:
     failureThreshold: 3
 
 schema:
-  namespace: orbital
   image:
     repository: orbitalhq/schema-server
     tag: "latest-preview"

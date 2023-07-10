@@ -2,12 +2,13 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: orbital-config
+  namespace: {{ template "orbital.namespace" . }}
 data:
   services.conf: |-
     services {
         "schema-server": {
             "rsocket-port": "{{ .Values.schema.service.rsocket.containerPort }}",
-            "url": "http://schema-server.{{ .Values.schema.namespace }}.svc.cluster.local:{{ .Values.schema.service.http.containerPort }}"
+            "url": "http://schema-server.{{ template "orbital.namespace" . }}.svc.cluster.local:{{ .Values.schema.service.http.containerPort }}"
         }
     }
   roles.conf: |-

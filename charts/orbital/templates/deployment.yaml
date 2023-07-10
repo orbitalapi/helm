@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: orbital
-  namespace: {{ .Values.orbital.namespace }}
+  namespace: {{ template "orbital.namespace" . }}
   labels:
     {{- include "orbital.metaLabels" . | nindent 4 }}
 spec:

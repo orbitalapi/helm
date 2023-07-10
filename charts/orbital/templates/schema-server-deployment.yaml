@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: schema-server
-  namespace: {{ .Values.schema.namespace }}
+  namespace: {{ template "orbital.namespace" . }}
   labels:
     {{- include "schema.metaLabels" . | nindent 4 }}
 spec:
