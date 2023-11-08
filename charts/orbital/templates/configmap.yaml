@@ -4,13 +4,12 @@ metadata:
   name: orbital-config
   namespace: {{ template "orbital.namespace" . }}
 data:
+  taxi.conf: |-
+    name: com.foo/test
+    version: 0.1.0
+    sourceRoot: src/
   services.conf: |-
-    services {
-        "schema-server": {
-            "rsocket-port": "{{ .Values.schema.service.rsocket.containerPort }}",
-            "url": "http://schema-server.{{ template "orbital.namespace" . }}.svc.cluster.local:{{ .Values.schema.service.http.containerPort }}"
-        }
-    }
+    { }
   roles.conf: |-
     defaultUserRoleMappings {
       roles = [ "Viewer" ]

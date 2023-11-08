@@ -32,9 +32,15 @@ spec:
         env:
         - name: OPTIONS
           value: >-
-            --vyne.analytics.mode=InProcess
-            --vyne.analytics.persistRemoteCallResponses=true
-            --vyne.analytics.persistResults=true
+            --vyne.analytics.persistRemoteCallResponses={{ .Values.orbital.persistRemoteCallResponses }}
+            --vyne.db.username=orbital
+            --vyne.db.password=orbital
+            --vyne.db.host={{ .Release.Name }}-postgresql.{{ template "orbital.namespace" . }}.svc.cluster.local
+            --vyne.workspace.project-file=/opt/service/config/taxi.conf
+        - name: JAVA_OPTS
+          value: >-
+            -Xms256m
+            -Xmx1024m
         volumeMounts:
           - name: orbital-config
             mountPath: /opt/service/config

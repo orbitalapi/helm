@@ -2,14 +2,10 @@
 namespace: ""
 
 orbital:
-  environment:
-    OPTIONS: >-
-      --vyne.analytics.mode=InProcess
-      --vyne.analytics.persistRemoteCallResponses=true
-      --vyne.analytics.persistResults=true
+  persistRemoteCallResponses: true
   image:
     repository: orbitalhq/orbital
-    tag: "latest-preview"
+    tag: "latest"
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -49,51 +45,9 @@ orbital:
     successThreshold: 1
     failureThreshold: 3
 
-schema:
-  image:
-    repository: orbitalhq/schema-server
-    tag: "latest-preview"
-    pullPolicy: IfNotPresent
-    ## Optionally specify an array of imagePullSecrets.
-    ## Secrets must be manually created in the namespace.
-    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-    ##
-    # pullSecrets:
-    #   - myRegistrKeySecretName
-
-  service:
-    enabled: true
-    type: ClusterIP
-    http:
-      servicePort: 9305
-      containerPort: 9305
-      # Set a nodePort which is available if service type is NodePort
-      # nodePort: 32080
-    rsocket:
-      servicePort: 7655
-      containerPort: 7655
-      # Set a nodePort which is available if service type is NodePort
-      # nodePort: 32080
-
-  podLabels: {}
-  replicaCount: 1
-  readinessProbe:
-    httpGet:
-      path: "/api/actuator/health"
-      port: 9305
-      scheme: HTTP
-    initialDelaySeconds: 5
-    timeoutSeconds: 5
-    periodSeconds: 10
-    successThreshold: 1
-    failureThreshold: 3
-  livenessProbe:
-    httpGet:
-      path: "/api/actuator/health"
-      port: 9305
-      scheme: HTTP
-    initialDelaySeconds: 5
-    timeoutSeconds: 5
-    periodSeconds: 10
-    successThreshold: 1
-    failureThreshold: 3
+postgresql:
+  enabled: true
+  auth:
+    username: orbital
+    database: orbital
+    password: orbital
