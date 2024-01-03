@@ -120,9 +120,13 @@ spec:
           {{ - end }}
           protocol: TCP
         readinessProbe:
-{{ toYaml .Values.orbital.readinessProbe | indent 10 }}
+        {{ toYaml .Values.orbital.readinessProbe | indent 10 }}
         livenessProbe:
-{{ toYaml .Values.orbital.livenessProbe | indent 10 }}
+        {{ toYaml .Values.orbital.livenessProbe | indent 10 }}
+        {{- if .Values.orbital.resources }}
+        resources:
+        {{ toYaml .Values.orbital.resources | indent 10 }}
+        {{- end }}
       securityContext:
       {{ toYaml .Values.orbital.podsecuritycontext | nindent 8 }}
       volumes:

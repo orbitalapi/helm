@@ -151,6 +151,13 @@ orbital:
   # Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
   lifecycle: {}
 
+  resources: {}
+#    limits:
+#      memory: 2G
+#    requests:
+#      cpu: 1
+#      memory: 2G
+
 streamServer:
   image:
     repository: orbitalhq/stream-server
@@ -235,6 +242,13 @@ streamServer:
   # Orbital stream server container lifecycle hooks
   # Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
   lifecycle: {}
+
+  resources: {}
+#    limits:
+#      memory: 2G
+#    requests:
+#      cpu: 1
+#      memory: 2G
 
 postgresql:
   enabled: true
