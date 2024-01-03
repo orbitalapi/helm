@@ -17,6 +17,10 @@ spec:
   selector:
     matchLabels:
       {{- include "orbital.selectorLabels" . | nindent 6 }}
+  {{- if .Values.orbital.updateStrategy }}
+  strategy:
+  {{ toYaml .Values.orbital.updateStrategy | indent 4 }}
+  {{ - end }}
   template:
     metadata:
       labels:

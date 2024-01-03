@@ -48,6 +48,11 @@ orbital:
     #   - myRegistrKeySecretName
 
   deploymentAnnotations: {}
+  updateStrategy: {}
+  #    type: RollingUpdate
+  #    rollingUpdate:
+  #      maxSurge: "100%"
+  #      maxUnavailable: "0%"
   serviceMonitor:
     enabled: false
 
@@ -98,6 +103,11 @@ streamServer:
     enabled: false
 
   deploymentAnnotations: {}
+  updateStrategy: {}
+#    type: RollingUpdate
+#    rollingUpdate:
+#      maxSurge: "100%"
+#      maxUnavailable: "0%"
   service:
     enabled: true
     type: NodePort

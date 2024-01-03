@@ -6,17 +6,21 @@ metadata:
   namespace: {{ template "orbital.namespace" . }}
   labels:
     {{- include "streamServer.metaLabels" . | nindent 4 }}
-  { { - if .Values.streamServer.deploymentAnnotations } }
+  {{- if .Values.streamServer.deploymentAnnotations }}
   annotations:
-  { { - range $key, $value := .Values.streamServer.deploymentAnnotations } }
-  { { $key } }: { { $value | quote } }
-  { { - end } }
-  { { - end } }
+  {{ - range $key, $value := .Values.streamServer.deploymentAnnotations }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   replicas: {{ .Values.streamServer.replicaCount }}
   selector:
     matchLabels:
       {{- include "streamServer.selectorLabels" . | nindent 6 }}
+  { { - if .Values.streamServer.updateStrategy } }
+  strategy:
+  { { toYaml .Values.streamServer.updateStrategy | indent 4 } }
+  { { - end } }
   template:
     metadata:
       labels:
