@@ -71,6 +71,9 @@ spec:
         ports:
         - name: stream-server
           containerPort: {{ .Values.streamServer.service.containerPort }}
+          {{- if .Values.streamServer.service.hostPort }}
+          hostPort: {{ .Values.streamServer.service.hostPort }}
+          {{- end }}
           protocol: TCP
         readinessProbe:
 {{ toYaml .Values.streamServer.readinessProbe | indent 10 }}

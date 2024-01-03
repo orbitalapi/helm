@@ -115,6 +115,9 @@ spec:
         ports:
         - name: orbital
           containerPort: {{ .Values.orbital.service.containerPort }}
+          {{- if .Values.orbital.service.hostPort }}
+          hostPort: { { .Values.orbital.service.hostPort }}
+          {{ - end }}
           protocol: TCP
         readinessProbe:
 {{ toYaml .Values.orbital.readinessProbe | indent 10 }}

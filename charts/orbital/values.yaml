@@ -73,8 +73,10 @@ orbital:
     type: NodePort
     servicePort: 9022
     containerPort: 9022
-    # Set a nodePort which is available if service type is NodePort
+    # Set a node port which is available if service type is NodePort
     # nodePort: 32080
+    # Set a host port
+    # hostPort:
 
   hostNetwork: false
   priorityClassName: ""
@@ -178,6 +180,8 @@ streamServer:
     containerPort: 9615
     # Set a nodePort which is available if service type is NodePort
     # nodePort: 32080
+    # Set a host port
+    # hostPort:
 
   podLabels: {}
   podAnnotations: {}
