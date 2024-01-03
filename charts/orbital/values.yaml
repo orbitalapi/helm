@@ -47,6 +47,7 @@ orbital:
     # pullSecrets:
     #   - myRegistrKeySecretName
 
+  deploymentAnnotations: {}
   serviceMonitor:
     enabled: false
 
@@ -96,6 +97,7 @@ streamServer:
   serviceMonitor:
     enabled: false
 
+  deploymentAnnotations: {}
   service:
     enabled: true
     type: NodePort

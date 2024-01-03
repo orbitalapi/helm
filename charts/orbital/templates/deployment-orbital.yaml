@@ -6,6 +6,12 @@ metadata:
   namespace: {{ template "orbital.namespace" . }}
   labels:
     {{- include "orbital.metaLabels" . | nindent 4 }}
+  {{- if .Values.orbital.deploymentAnnotations }}
+  annotations:
+  {{- range $key, $value := .Values.orbital.deploymentAnnotations }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   replicas: {{ .Values.orbital.replicaCount }}
   selector:

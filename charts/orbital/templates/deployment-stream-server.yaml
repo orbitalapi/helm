@@ -6,6 +6,12 @@ metadata:
   namespace: {{ template "orbital.namespace" . }}
   labels:
     {{- include "streamServer.metaLabels" . | nindent 4 }}
+  { { - if .Values.streamServer.deploymentAnnotations } }
+  annotations:
+  { { - range $key, $value := .Values.streamServer.deploymentAnnotations } }
+  { { $key } }: { { $value | quote } }
+  { { - end } }
+  { { - end } }
 spec:
   replicas: {{ .Values.streamServer.replicaCount }}
   selector:
