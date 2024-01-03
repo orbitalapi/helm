@@ -2,7 +2,40 @@
 namespace: ""
 
 orbital:
+  security:
+    enabled: false
+    jwksUri: ""
+    issuerUrl: ""
+    clientId: ""
+    scope: "openid"
+    requireHttps: true
+
   persistRemoteCallResponses: true
+  project:
+    enabled: true
+    path: /opt/service/config/taxi.conf
+  workspace:
+    enabled: false
+    path: /opt/service/config/workspaces.conf
+  additionalConfig:
+    workspacesConfig: {}
+    taxiConfig:
+      name: com.foo/test
+      version: 0.1.0
+      sourceRoot: src/
+      additionalSources: |- 
+        {
+          "@orbital/config": "conf/*.conf"
+        }
+  ## workspacesConfig: |
+  ##   git {
+  ##    pollFrequency=PT20S
+  ##    repositories=[ {
+  ##      branch=main
+  ##      name=orbital-demo
+  ##      uri=""
+  ##    } ] }
+  ##
   image:
     repository: orbitalhq/orbital
     tag: "latest"
@@ -13,6 +46,9 @@ orbital:
     ##
     # pullSecrets:
     #   - myRegistrKeySecretName
+
+  serviceMonitor:
+    enabled: false
 
   service:
     enabled: true
@@ -38,6 +74,52 @@ orbital:
     httpGet:
       path: "/api/actuator/health"
       port: 9022
+      scheme: HTTP
+    initialDelaySeconds: 5
+    timeoutSeconds: 5
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+
+streamServer:
+  image:
+    repository: orbitalhq/stream-server
+    tag: "latest"
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+
+  serviceMonitor:
+    enabled: false
+
+  service:
+    enabled: true
+    type: NodePort
+    servicePort: 9615
+    containerPort: 9615
+    # Set a nodePort which is available if service type is NodePort
+    # nodePort: 32080
+
+  podLabels: {}
+  replicaCount: 1
+  readinessProbe:
+    httpGet:
+      path: "/api/actuator/health"
+      port: 9615
+      scheme: HTTP
+    initialDelaySeconds: 5
+    timeoutSeconds: 5
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+  livenessProbe:
+    httpGet:
+      path: "/api/actuator/health"
+      port: 9615
       scheme: HTTP
     initialDelaySeconds: 5
     timeoutSeconds: 5

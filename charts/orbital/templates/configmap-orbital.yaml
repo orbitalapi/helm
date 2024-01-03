@@ -4,12 +4,10 @@ metadata:
   name: orbital-config
   namespace: {{ template "orbital.namespace" . }}
 data:
-  taxi.conf: |-
-    name: com.foo/test
-    version: 0.1.0
-    sourceRoot: src/
-  services.conf: |-
-    { }
+  {{- if .Values.orbital.additionalConfig.workspacesConfig }}
+  workspaces.conf: |- {{ .Values.orbital.additionalConfig.workspacesConfig | nindent 4 }}
+  {{- end }}
+  taxi.conf: |- {{ toYaml .Values.orbital.additionalConfig.taxiConfig | nindent 4 }}
   roles.conf: |-
     defaultUserRoleMappings {
       roles = [ "Viewer" ]

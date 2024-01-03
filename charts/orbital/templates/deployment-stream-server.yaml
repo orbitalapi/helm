@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orbital-stream-server
+  namespace: {{ template "orbital.namespace" . }}
+  labels:
+    {{- include "streamServer.metaLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.streamServer.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "streamServer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+       {{- include "streamServer.metaLabels" . | nindent 8 }}
+       {{- if .Values.streamServer.podLabels }}
+       {{ toYaml .Values.streamServer.podLabels | nindent 8 }}
+       {{- end }}
+    spec:
+      {{- if .Values.streamServer.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.streamServer.image.pullSecrets }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      containers:
+      - name: "orbital"
+        image: {{ .Values.streamServer.image.repository }}:{{ .Values.streamServer.image.tag }}
+        imagePullPolicy: {{ .Values.streamServer.image.pullPolicy }}
+        env:
+        - name: OPTIONS
+          value: >-
+            --vyne.services.config-file=/opt/service/config/services/services.conf
+        - name: JAVA_OPTS
+          value: >-
+            -Xms256m
+            -Xmx1024m
+        volumeMounts:
+          - name: orbital-services-config
+            mountPath: /opt/service/config/services
+        ports:
+        - name: stream-server
+          containerPort: {{ .Values.streamServer.service.containerPort }}
+          protocol: TCP
+        readinessProbe:
+{{ toYaml .Values.streamServer.readinessProbe | indent 10 }}
+        livenessProbe:
+{{ toYaml .Values.streamServer.livenessProbe | indent 10 }}
+      volumes:
+        - name: orbital-services-config
+          configMap:
+            name: orbital-services-config

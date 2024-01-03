@@ -46,6 +46,15 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{- define "streamServer.labels" -}}
+helm.sh/chart: {{ include "orbital.chart" . }}
+{{ include "streamServer.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
 {{/*
 Selector labels
 */}}
@@ -54,8 +63,8 @@ app.kubernetes.io/name: {{ include "orbital.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{- define "schema.selectorLabels" -}}
-app.kubernetes.io/name: schema
+{{- define "streamServer.selectorLabels" -}}
+app.kubernetes.io/name: stream-server
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
@@ -78,6 +87,17 @@ app.kubernetes.io/instance: "{{ .Release.Name }}"
 app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- range $key, $value := .Values.orbital.extraLabels }}
+{{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end -}}
+
+{{- define "streamServer.metaLabels" -}}
+app.kubernetes.io/name: stream-server
+helm.sh/chart: {{ template "orbital.chart" . }}
+app.kubernetes.io/instance: "{{ .Release.Name }}"
+app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- range $key, $value := .Values.streamServer.extraLabels }}
 {{ $key }}: {{ $value | quote }}
 {{- end }}
 {{- end -}}

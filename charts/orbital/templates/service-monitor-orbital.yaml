@@ -1,0 +1,17 @@
+{{- if .Values.orbital.serviceMonitor.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: orbital-service-monitor
+spec:
+  selector:
+    matchLabels:
+      {{- include "orbital.selectorLabels" . | nindent 6 }}
+  endpoints:
+  - port: 'orbital'
+    path: /api/actuator/prometheus
+    interval: 60s
+    scheme: http
+    scrapeTimeout: 30s
+{{- end }}

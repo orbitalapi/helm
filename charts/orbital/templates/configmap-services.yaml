@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orbital-services-config
+  namespace: {{ template "orbital.namespace" . }}
+data:
+  services.conf: |-
+    services {
+      analytics-server {
+          rsocket="tcp://vyne-analytics-server:7654"
+          url="http://orbital-query-analytics"
+      }
+      orbital-prometheus {
+          url="http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090"
+      }
+      orbital-server {
+          rsocket="tcp://orbital.orbital.svc.cluster.local:7655"
+          url="http://orbital.orbital.svc.cluster.local:9022"
+      }
+      stream-server {
+          url="http://orbital-stream-server"
+      }
+    }

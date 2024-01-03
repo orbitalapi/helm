@@ -17,5 +17,10 @@ spec:
       {{- if (and (or (eq .Values.orbital.service.type "LoadBalancer") (eq .Values.orbital.service.type "NodePort")) (not (empty .Values.orbital.service.nodePort))) }}
       nodePort: {{ .Values.orbital.service.nodePort }}
       {{- end }}
+    - name: rsocket-tcp
+      port: 7655
+      targetPort: 7655
+      appProtocol: tcp
+      protocol: TCP
   selector:
     {{- include "orbital.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,17 @@
+{{- if .Values.streamServer.serviceMonitor.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: stream-server-service-monitor
+spec:
+  selector:
+    matchLabels:
+      {{- include "streamServer.selectorLabels" . | nindent 6 }}
+  endpoints:
+  - port: 'stream-server'
+    path: /api/actuator/prometheus
+    interval: 60s
+    scheme: http
+    scrapeTimeout: 30s
+{{- end }}
