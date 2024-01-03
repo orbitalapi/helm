@@ -121,6 +121,13 @@ orbital:
           target:
             type: Utilization
             averageUtilization: 80
+
+  podDisruptionBudget:
+    enabled: false
+    # Uncomment only one of the following when enabled is set to true
+    # maxUnavailable: "50%"
+    # minAvailable: "50%"
+
   readinessProbe:
     httpGet:
       path: "/api/actuator/health"
@@ -229,6 +236,12 @@ streamServer:
           target:
             type: Utilization
             averageUtilization: 80
+
+  podDisruptionBudget:
+    enabled: false
+    # Uncomment only one of the following when enabled is set to true
+    # maxUnavailable: "50%"
+    # minAvailable: "50%"
 
   readinessProbe:
     httpGet:

@@ -1,0 +1,19 @@
+{{- if .Values.streamServer.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: orbital-stream-server
+  namespace: {{ template "orbital.namespace" . }}
+  labels:
+    {{- include "streamServer.metaLabels" . | nindent 4 }}
+spec:
+  {{- if .Values.streamServer.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.streamServer.podDisruptionBudget.minAvailable }}
+  {{- end  }}
+  {{- if .Values.streamServer.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.streamServer.podDisruptionBudget.maxUnavailable }}
+  {{- end  }}
+  selector:
+    matchLabels:
+      {{- include "streamServer.metaLabels" . | nindent 6 }}
+  {{- end }}
