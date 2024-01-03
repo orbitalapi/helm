@@ -57,6 +57,15 @@ orbital:
   serviceMonitor:
     enabled: false
 
+  serviceAccount:
+    create: true
+    # Automount the service account token. By default, this is disabled, and the token is only mounted on the controller
+    # container. Some sidecars require enabling this.
+    automountServiceAccountToken: false
+  ## Optionally specify the name of the service account to create and the annotations to add.
+  #  name:
+  #  annotations: {}
+
   service:
     enabled: true
     type: NodePort

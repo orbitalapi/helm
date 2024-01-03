@@ -148,3 +148,21 @@ Environment variables are sorted alphabetically
 {{- end -}}
 
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "orbital.serviceAccountName" -}}
+{{- if .Values.orbital.serviceAccount.create -}}
+    {{ default (include "orbital.fullname" .) .Values.orbital.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.orbital.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the secret for service account token to use
+*/}}
+{{- define "orbital.serviceAccountTokenName" -}}
+{{ include "orbital.serviceAccountName" . }}-token
+{{- end -}}
