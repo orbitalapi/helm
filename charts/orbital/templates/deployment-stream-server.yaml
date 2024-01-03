@@ -83,6 +83,14 @@ spec:
         resources:
         {{ toYaml .Values.streamServer.resources | indent 10 }}
         {{- end }}
+      {{- if .Values.streamServer.affinity }}
+      affinity:
+      {{ toYaml .Values.streamServer.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.streamServer.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{ toYaml .Values.streamServer.topologySpreadConstraints | indent 8 }}
+      {{- end }}
       securityContext:
       {{ toYaml .Values.streamServer.podsecuritycontext | nindent 8 }}
       volumes:
