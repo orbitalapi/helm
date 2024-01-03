@@ -66,6 +66,7 @@ orbital:
     # nodePort: 32080
 
   podLabels: {}
+  podAnnotations: {}
   replicaCount: 1
   readinessProbe:
     httpGet:
@@ -119,6 +120,7 @@ streamServer:
     # nodePort: 32080
 
   podLabels: {}
+  podAnnotations: {}
   replicaCount: 1
   readinessProbe:
     httpGet:

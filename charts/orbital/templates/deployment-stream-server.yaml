@@ -27,6 +27,12 @@ spec:
 
   template:
     metadata:
+      annotations:
+        {{- if .Values.orbital.podAnnotations }}
+        {{- range $key, $value := .Values.orbital.podAnnotations }}
+        {{ $key }}: { { $value | quote }}
+        {{- end }}
+        {{- end }}
       labels:
        {{- include "streamServer.metaLabels" . | nindent 8 }}
        {{- if .Values.streamServer.podLabels }}
