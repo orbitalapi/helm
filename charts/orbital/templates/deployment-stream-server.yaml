@@ -17,10 +17,14 @@ spec:
   selector:
     matchLabels:
       {{- include "streamServer.selectorLabels" . | nindent 6 }}
-  { { - if .Values.streamServer.updateStrategy } }
+  {{- if .Values.streamServer.updateStrategy }}
   strategy:
-  { { toYaml .Values.streamServer.updateStrategy | indent 4 } }
-  { { - end } }
+  {{ toYaml .Values.streamServer.updateStrategy | indent 4 }}
+  {{- end } }
+  {{- if .Values.streamServer.deploymentMinReadySeconds }}
+  minReadySeconds: {{ .Values.streamServer.deploymentMinReadySeconds }}
+  {{- end }}
+
   template:
     metadata:
       labels:

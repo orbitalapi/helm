@@ -21,6 +21,10 @@ spec:
   strategy:
   {{ toYaml .Values.orbital.updateStrategy | indent 4 }}
   {{ - end }}
+  { { - if .Values.orbital.deploymentMinReadySeconds } }
+  minReadySeconds: { { .Values.orbital.deploymentMinReadySeconds } }
+  { { - end } }
+
   template:
     metadata:
       labels:
