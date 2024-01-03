@@ -55,6 +55,23 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
+      {{- if .Values.orbital.hostNetwork }}
+      hostNetwork: true
+      {{- end }}
+      {{- if .Values.orbital.priorityClassName }}
+      priorityClassName: "{{ .Values.orbital.priorityClassName }}"
+      {{- end }}
+      {{- if .Values.orbital.hostAliases }}
+      hostAliases:
+        {{- toYaml .Values.orbital.hostAliases | nindent 6 }}
+      {{- end }}
+      {{- if .Values.orbital.dnsPolicy }}
+      dnsPolicy: { { .Values.orbital.dnsPolicy | quote }}
+      {{ - end }}
+      {{ - if .Values.orbital.dnsConfig }}
+      dnsConfig:
+      {{ toYaml .Values.orbital.dnsConfig | indent 8 }}
+      {{ - end }}
       containers:
       - name: "orbital"
         image: {{ .Values.orbital.image.repository }}:{{ .Values.orbital.image.tag }}
