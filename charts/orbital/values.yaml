@@ -102,6 +102,7 @@ orbital:
   podLabels: {}
   podAnnotations: {}
   replicaCount: 1
+  terminationGracePeriodSeconds: 30
   # Enable autoscaling using HorizontalPodAutoscaler
   # When configuring an HPA, you must set resource requests on all containers via
   # "resources" if this is enabled, replica count above is ignored
@@ -160,11 +161,19 @@ orbital:
 
   # Affinity for pod assignment
   # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-#  affinity: {}
+  affinity: {}
 
   # Topology spread constraints for pod assignment (requires Kubernetes >= 1.19)
   # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
-#  topologySpreadConstraints: []
+  topologySpreadConstraints: []
+
+  # Tolerations for pod assignment
+  # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+
+  # Node labels for pod assignment
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  nodeSelector: {}
 
 streamServer:
   image:
@@ -201,6 +210,7 @@ streamServer:
   podLabels: {}
   podAnnotations: {}
   replicaCount: 1
+  terminationGracePeriodSeconds: 30
   # Enable autoscaling using HorizontalPodAutoscaler
   # When configuring an HPA, you must set resource requests on all containers via
   # "resources" if this is enabled, replica count above is ignored
@@ -260,11 +270,19 @@ streamServer:
 
   # Affinity for pod assignment
   # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-#  affinity: {}
+  affinity: {}
 
   # Topology spread constraints for pod assignment (requires Kubernetes >= 1.19)
   # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
-#  topologySpreadConstraints: []
+  topologySpreadConstraints: []
+
+  # Tolerations for pod assignment
+  # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: [ ]
+
+  # Node labels for pod assignment
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  nodeSelector: { }
 
 postgresql:
   enabled: true

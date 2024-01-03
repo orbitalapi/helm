@@ -127,16 +127,25 @@ spec:
         resources:
         {{ toYaml .Values.orbital.resources | indent 10 }}
         {{- end }}
-      { { - if .Values.orbital.affinity } }
+      {{- if .Values.orbital.affinity }}
       affinity:
-      { { toYaml .Values.orbital.affinity | indent 8 } }
-      { { - end } }
-      { { - if .Values.orbital.topologySpreadConstraints } }
+      {{ toYaml .Values.orbital.affinity | indent 8 }}
+      {{- end } }
+      {{- if .Values.orbital.topologySpreadConstraints }}
       topologySpreadConstraints:
-      { { toYaml .Values.orbital.topologySpreadConstraints | indent 8 } }
-      { { - end } }
+      {{ toYaml .Values.orbital.topologySpreadConstraints | indent 8 }}
+      {{- end } }
       securityContext:
       {{ toYaml .Values.orbital.podsecuritycontext | nindent 8 }}
+      {{- if .Values.orbital.nodeSelector }}
+      nodeSelector:
+      {{ toYaml .Values.orbital.nodeSelector | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.orbital.terminationGracePeriodSeconds }}
+      {{- if .Values.orbital.tolerations }}
+      tolerations:
+      {{ toYaml .Values.orbital.tolerations | indent 8 }}
+      {{- end }}
       volumes:
         - name: orbital-config
           configMap:
