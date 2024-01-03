@@ -52,7 +52,7 @@ spec:
         image: {{ .Values.streamServer.image.repository }}:{{ .Values.streamServer.image.tag }}
         imagePullPolicy: {{ .Values.streamServer.image.pullPolicy }}
         securityContext:
-        { { toYaml .Values.streamServer.containerSecurityContext | nindent 10 } }
+        {{ toYaml .Values.streamServer.containerSecurityContext | nindent 10 }}
         env:
         - name: OPTIONS
           value: >-
@@ -61,6 +61,10 @@ spec:
           value: >-
             -Xms256m
             -Xmx1024m
+        {{- if .Values.streamServer.lifecycle }}
+        lifecycle:
+        {{- toYaml .Values.streamServer.lifecycle | nindent 10 }}
+        {{- end }}
         volumeMounts:
           - name: orbital-services-config
             mountPath: /opt/service/config/services

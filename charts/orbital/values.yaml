@@ -145,6 +145,10 @@ orbital:
   # securityContext for containers.
   containerSecurityContext: {}
 
+  # Orbital container lifecycle hooks
+  # Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+  lifecycle: {}
+
 streamServer:
   image:
     repository: orbitalhq/stream-server
@@ -223,6 +227,10 @@ streamServer:
 
   # securityContext for stream server container.
   containerSecurityContext: {}
+
+  # Orbital stream server container lifecycle hooks
+  # Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+  lifecycle: {}
 
 postgresql:
   enabled: true

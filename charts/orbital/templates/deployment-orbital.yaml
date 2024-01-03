@@ -67,11 +67,11 @@ spec:
       {{- end }}
       {{- if .Values.orbital.dnsPolicy }}
       dnsPolicy: { { .Values.orbital.dnsPolicy | quote }}
-      {{ - end }}
-      {{ - if .Values.orbital.dnsConfig }}
+      {{- end }}
+      {{- if .Values.orbital.dnsConfig }}
       dnsConfig:
       {{ toYaml .Values.orbital.dnsConfig | indent 8 }}
-      {{ - end }}
+      {{- end }}
       containers:
       - name: "orbital"
         image: {{ .Values.orbital.image.repository }}:{{ .Values.orbital.image.tag }}
@@ -103,6 +103,10 @@ spec:
           value: >-
             -Xms256m
             -Xmx1024m
+        {{- if .Values.orbital.lifecycle }}
+        lifecycle:
+        {{- toYaml .Values.orbital.lifecycle | nindent 10 }}
+        {{- end }}
         volumeMounts:
           - name: orbital-config
             mountPath: /opt/service/config
