@@ -139,6 +139,12 @@ orbital:
     successThreshold: 1
     failureThreshold: 3
 
+  # securityContext for orbital pods.
+  securityContext: {}
+
+  # securityContext for containers.
+  containerSecurityContext: {}
+
 streamServer:
   image:
     repository: orbitalhq/stream-server
@@ -190,6 +196,7 @@ streamServer:
           target:
             type: Utilization
             averageUtilization: 80
+
   readinessProbe:
     httpGet:
       path: "/api/actuator/health"
@@ -210,6 +217,12 @@ streamServer:
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
+
+  # securityContext for stream server pods.
+  securityContext: {}
+
+  # securityContext for stream server container.
+  containerSecurityContext: {}
 
 postgresql:
   enabled: true
