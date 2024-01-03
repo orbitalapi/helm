@@ -13,7 +13,9 @@ metadata:
   {{- end }}
   {{- end }}
 spec:
+  {{- if not .Values.streamServer.autoscaling.enabled }}
   replicas: {{ .Values.streamServer.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "streamServer.selectorLabels" . | nindent 6 }}

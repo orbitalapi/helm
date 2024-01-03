@@ -166,3 +166,13 @@ Create the name of the secret for service account token to use
 {{- define "orbital.serviceAccountTokenName" -}}
 {{ include "orbital.serviceAccountName" . }}-token
 {{- end -}}
+
+{{- define "orbital.autoscalingVersion" -}}
+{{- if (.Capabilities.APIVersions.Has "autoscaling/v2") -}}
+autoscaling/v2
+{{- else if (.Capabilities.APIVersions.Has "autoscaling/v2beta2") -}}
+autoscaling/v2beta2
+{{- else -}}
+autoscaling/v1
+{{- end -}}
+{{- end -}}

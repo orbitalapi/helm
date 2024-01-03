@@ -1,6 +1,8 @@
 #use this to override the namespace other than the helm release
 namespace: ""
 
+fullnameOverride: ""
+
 orbital:
   security:
     enabled: false
@@ -77,6 +79,24 @@ orbital:
   podLabels: {}
   podAnnotations: {}
   replicaCount: 1
+  # Enable autoscaling using HorizontalPodAutoscaler
+  # When configuring an HPA, you must set resource requests on all containers via
+  # "resources" if this is enabled, replica count above is ignored
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 5
+    behavior: {}
+    ## targetCPUUtilizationPercentage only used if the cluster doesn't support autoscaling/v2 or autoscaling/v2beta
+    targetCPUUtilizationPercentage:
+    ## Otherwise for clusters that do support autoscaling/v2 or autoscaling/v2beta, use metrics
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 80
   readinessProbe:
     httpGet:
       path: "/api/actuator/health"
@@ -131,6 +151,24 @@ streamServer:
   podLabels: {}
   podAnnotations: {}
   replicaCount: 1
+  # Enable autoscaling using HorizontalPodAutoscaler
+  # When configuring an HPA, you must set resource requests on all containers via
+  # "resources" if this is enabled, replica count above is ignored
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 5
+    behavior: {}
+    ## targetCPUUtilizationPercentage only used if the cluster doesn't support autoscaling/v2 or autoscaling/v2beta
+    targetCPUUtilizationPercentage:
+    ## Otherwise for clusters that do support autoscaling/v2 or autoscaling/v2beta, use metrics
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 80
   readinessProbe:
     httpGet:
       path: "/api/actuator/health"

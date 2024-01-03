@@ -1,0 +1,26 @@
+{{- if .Values.streamServer.autoscaling.enabled }}
+apiVersion: {{ include "orbital.autoscalingVersion" . }}
+kind: HorizontalPodAutoscaler
+metadata:
+  name: "orbital-stream-server"
+  namespace:  {{ template "orbital.namespace" . }}
+  labels:
+    {{- include "streamServer.metaLabels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: "orbital-stream-server"
+  minReplicas: {{ .Values.streamServer.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.streamServer.autoscaling.maxReplicas }}
+  {{- if .Values.streamServer.autoscaling.behavior }}
+  behavior:
+    {{- toYaml .Values.streamServer.autoscaling.behavior | nindent 4 }}
+  {{- end }}
+  {{- if not (.Capabilities.APIVersions.Has "autoscaling/v2beta2") }}
+  targetCPUUtilizationPercentage: {{ .Values.streamServer.autoscaling.targetCPUUtilizationPercentage | default 80 }}
+  {{- else }}
+  metrics:
+    {{- toYaml .Values.streamServer.autoscaling.metrics | nindent 4 }}
+  {{- end }}
+  {{- end }}
