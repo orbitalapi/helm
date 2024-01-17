@@ -167,6 +167,16 @@ Create the name of the secret for service account token to use
 {{ include "orbital.serviceAccountName" . }}-token
 {{- end -}}
 
+{{- define "orbital.ingressVersion" -}}
+{{- if (.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress") -}}
+networking.k8s.io/v1
+{{- else if (.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress") -}}
+networking.k8s.io/v1beta1
+{{- else -}}
+extensions/v1beta1
+{{- end -}}
+{{- end -}}
+
 {{- define "orbital.autoscalingVersion" -}}
 {{- if (.Capabilities.APIVersions.Has "autoscaling/v2") -}}
 autoscaling/v2
