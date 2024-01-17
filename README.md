@@ -1,4 +1,4 @@
-# Orbital Helm Chart
+# The Official Orbital Helm Chart
 
 Add Helm repository to the repos:
 
