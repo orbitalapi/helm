@@ -18,14 +18,7 @@ helm search repo orbital
 - For helm 3.X
 
 ```bash
-kubectl create ns orbital
-helm install orbital orbital/orbital --namespace=orbital --create-namespace
-```
-### Change namespace
-If you want to change the namespace on the chart this can be done by overriding the following fields
-```bash
-kubectl create ns orbital
-helm install orbital orbital/orbital --namespace=xxx --set orbital.namespace=xxx --set schema.namespace=xxx
+helm upgrade -i orbital orbital/orbital --namespace=orbital --create-namespace
 ```
 
 ## Port forward the UI
