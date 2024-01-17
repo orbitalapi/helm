@@ -22,10 +22,10 @@ spec:
   {{- if .Values.orbital.updateStrategy }}
   strategy:
   {{ toYaml .Values.orbital.updateStrategy | indent 4 }}
-  {{ - end }}
-  { { - if .Values.orbital.deploymentMinReadySeconds } }
-  minReadySeconds: { { .Values.orbital.deploymentMinReadySeconds } }
-  { { - end } }
+  {{- end }}
+  {{- if .Values.orbital.deploymentMinReadySeconds }}
+  minReadySeconds: { { .Values.orbital.deploymentMinReadySeconds }}
+  {{- end }}
 
   template:
     metadata:
@@ -117,7 +117,7 @@ spec:
           containerPort: {{ .Values.orbital.service.containerPort }}
           {{- if .Values.orbital.service.hostPort }}
           hostPort: { { .Values.orbital.service.hostPort }}
-          {{ - end }}
+          {{- end }}
           protocol: TCP
         readinessProbe:
         {{ toYaml .Values.orbital.readinessProbe | indent 10 }}
@@ -130,11 +130,11 @@ spec:
       {{- if .Values.orbital.affinity }}
       affinity:
       {{ toYaml .Values.orbital.affinity | indent 8 }}
-      {{- end } }
+      {{- end }}
       {{- if .Values.orbital.topologySpreadConstraints }}
       topologySpreadConstraints:
       {{ toYaml .Values.orbital.topologySpreadConstraints | indent 8 }}
-      {{- end } }
+      {{- end }}
       securityContext:
       {{ toYaml .Values.orbital.podsecuritycontext | nindent 8 }}
       {{- if .Values.orbital.nodeSelector }}
@@ -153,7 +153,7 @@ spec:
         - name: orbital-services-config
           configMap:
             name: orbital-services-config
-          {{ - if (and (not .Values.orbital.serviceAccount.automountServiceAccountToken) (or .Values.orbital.serviceAccount.create .Values.orbital.serviceAccount.name)) }}
+          {{- if (and (not .Values.orbital.serviceAccount.automountServiceAccountToken) (or .Values.orbital.serviceAccount.create .Values.orbital.serviceAccount.name)) }}
         - name: {{ template "orbital.serviceAccountTokenName" . }}
           secret:
             secretName: {{ template "orbital.serviceAccountTokenName" . }}

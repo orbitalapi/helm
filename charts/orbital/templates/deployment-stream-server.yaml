@@ -8,7 +8,7 @@ metadata:
     {{- include "streamServer.metaLabels" . | nindent 4 }}
   {{- if .Values.streamServer.deploymentAnnotations }}
   annotations:
-  {{ - range $key, $value := .Values.streamServer.deploymentAnnotations }}
+  {{- range $key, $value := .Values.streamServer.deploymentAnnotations }}
   {{ $key }}: {{ $value | quote }}
   {{- end }}
   {{- end }}
@@ -22,7 +22,7 @@ spec:
   {{- if .Values.streamServer.updateStrategy }}
   strategy:
   {{ toYaml .Values.streamServer.updateStrategy | indent 4 }}
-  {{- end } }
+  {{- end }}
   {{- if .Values.streamServer.deploymentMinReadySeconds }}
   minReadySeconds: {{ .Values.streamServer.deploymentMinReadySeconds }}
   {{- end }}
@@ -93,15 +93,15 @@ spec:
       {{- end }}
       securityContext:
       {{ toYaml .Values.streamServer.podsecuritycontext | nindent 8 }}
-      {{ - if .Values.streamServer.nodeSelector }}
+      {{- if .Values.streamServer.nodeSelector }}
       nodeSelector:
       {{ toYaml .Values.streamServer.nodeSelector | indent 8 }}
-      {{ - end } }
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.streamServer.terminationGracePeriodSeconds }}
-      {{ - if .Values.streamServer.tolerations }}
+      {{- if .Values.streamServer.tolerations }}
       tolerations:
       {{ toYaml .Values.streamServer.tolerations | indent 8 }}
-      {{ - end }}
+      {{- end }}
       volumes:
         - name: orbital-services-config
           configMap:
