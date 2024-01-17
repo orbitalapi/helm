@@ -68,18 +68,6 @@ app.kubernetes.io/name: stream-server
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "orbital.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "orbital.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
 {{- define "orbital.metaLabels" -}}
 app.kubernetes.io/name: {{ template "orbital.name" . }}
 helm.sh/chart: {{ template "orbital.chart" . }}
