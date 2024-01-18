@@ -4,10 +4,12 @@ metadata:
   name: orbital-config
   namespace: {{ template "orbital.namespace" . }}
 data:
-  taxi.conf: |-
-    name: com.foo/test
-    version: 0.1.0
-    sourceRoot: src/
+  {{- if not (empty .Values.orbital.additionalConfig.workspacesConfig) }}
+  workspaces.conf: |
+    {{ .Values.orbital.additionalConfig.workspacesConfig | nindent 4 }}
+  {{- end}}
+  taxi.conf: |
+    {{ .Values.orbital.additionalConfig.taxiConfig | nindent 4 }}
   services.conf: |-
     { }
   roles.conf: |-

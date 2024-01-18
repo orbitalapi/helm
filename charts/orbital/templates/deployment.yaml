@@ -36,7 +36,11 @@ spec:
             --vyne.db.username=orbital
             --vyne.db.password=orbital
             --vyne.db.host={{ .Release.Name }}-postgresql.{{ template "orbital.namespace" . }}.svc.cluster.local
-            --vyne.workspace.project-file=/opt/service/config/taxi.conf
+            {{- if .Values.orbital.project.enabled }}
+            --vyne.workspace.project-file={{ .Values.orbital.project.path }}
+            {{- else }}
+            --vyne.workspace.config-file={{ .Values.orbital.workspace.path }}
+            {{- end }}
         - name: JAVA_OPTS
           value: >-
             -Xms256m
@@ -44,6 +48,8 @@ spec:
         volumeMounts:
           - name: orbital-config
             mountPath: /opt/service/config
+          - name: orbital-services-config
+            mountPath: /opt/service/config/services
         ports:
         - name: orbital
           containerPort: {{ .Values.orbital.service.containerPort }}
@@ -56,3 +62,6 @@ spec:
         - name: orbital-config
           configMap:
             name: orbital-config
+        - name: orbital-services-config
+          configMap:
+            name: orbital-services-config
