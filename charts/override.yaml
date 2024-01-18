@@ -1,0 +1,20 @@
+orbital:
+  image:
+    tag: "next"
+  project:
+    enabled: false
+  workspace:
+    enabled: true
+  additionalConfig:
+    workspacesConfig: |-
+      git {
+       pollFrequency=PT20S
+       repositories=[ {
+       branch=main
+       name=orbital-demo
+       uri="https://andrewgkew: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@github.com/QuadCorps/orbital-demo"
+      } ] }
+
+streamServer:
+  image:
+    tag: "next"
