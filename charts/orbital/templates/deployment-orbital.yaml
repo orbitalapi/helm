@@ -82,12 +82,13 @@ spec:
 {{ toYaml .Values.orbital.containerSecurityContext | nindent 10 }}
         {{- end }}
         env:
+          {{- range .Values.orbital.env }}
+        - name: {{ .name }}
+          value: {{ .value }}
+          {{- end }}
         - name: OPTIONS
           value: >-
             --vyne.analytics.persistRemoteCallResponses={{ .Values.orbital.persistRemoteCallResponses }}
-            --vyne.db.username=orbital
-            --vyne.db.password=orbital
-            --vyne.db.host={{ .Release.Name }}-postgresql.{{ template "orbital.namespace" . }}.svc.cluster.local
             --vyne.services.config-file=/opt/service/config/services/services.conf
             {{- if .Values.orbital.security.enabled }}
             --vyne.security.openIdp.enabled=true

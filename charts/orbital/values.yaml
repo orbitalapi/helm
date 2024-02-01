@@ -4,6 +4,17 @@ namespace: ""
 fullnameOverride: ""
 
 orbital:
+  env:
+    - name: VYNE_DB_USERNAME
+      value: orbital
+    - name: VYNE_DB_PASSWORD
+      value: orbital
+#      secretKeyRef:
+#        key: dbpassword
+#        name: orbitalcredentials
+#    - name: VYNE_DB_HOST
+#      value:
+
   security:
     enabled: false
     jwksUri: ""
