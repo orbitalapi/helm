@@ -29,15 +29,15 @@ orbital:
         {
           "@orbital/config": "conf/*.conf"
         }
-  ## workspacesConfig: |
-  ##   git {
-  ##    pollFrequency=PT20S
-  ##    repositories=[ {
-  ##      branch=main
-  ##      name=orbital-demo
-  ##      uri=""
-  ##    } ] }
-  ##
+#    workspacesConfig: |-
+#      git {
+#        pollFrequency=PT20S
+#        repositories=[ {
+#          branch=main
+#          name=orbital-demo
+#          uri=""
+#      } ] }
+
   image:
     repository: orbitalhq/orbital
     tag: "latest"
