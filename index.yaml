@@ -3,6 +3,24 @@ entries:
   orbital:
   - apiVersion: v2
     appVersion: 0.25.0
+    created: "2024-02-01T20:20:14.728093731Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.2.2
+    description: A Helm chart for Orbital
+    digest: 003940bd9520af30e691b83de40bf9a1d24a73a515f771d5370cd060f15c8781
+    maintainers:
+    - email: andrew@quadcorps.co.uk
+      name: andrewgkew
+    name: orbital
+    type: application
+    urls:
+    - https://github.com/orbitalapi/helm/releases/download/orbital-0.5.2/orbital-0.5.2.tgz
+    version: 0.5.2
+  - apiVersion: v2
+    appVersion: 0.25.0
     created: "2024-02-01T19:59:41.996054943Z"
     dependencies:
     - condition: postgresql.enabled
@@ -73,4 +91,4 @@ entries:
     urls:
     - https://github.com/orbitalapi/helm/releases/download/orbital-0.3.0/orbital-0.3.0.tgz
     version: 0.3.0
-generated: "2024-02-01T19:59:41.996091842Z"
+generated: "2024-02-01T20:20:14.728108979Z"
