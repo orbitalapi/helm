@@ -1,0 +1,675 @@
+---
+# Source: orbital/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: orbital
+  namespace: orbital
+  labels:
+    app.kubernetes.io/name: orbital
+    helm.sh/chart: orbital-0.5.0
+    app.kubernetes.io/instance: "orbital"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "0.25.0"
+---
+# Source: orbital/charts/postgresql/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: orbital-postgresql
+  namespace: "orbital"
+  labels:
+    app.kubernetes.io/instance: orbital
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/version: 16.0.0
+    helm.sh/chart: postgresql-13.2.2
+type: Opaque
+data:
+  postgres-password: "amVXaUlHY0Vibg=="
+  password: "b3JiaXRhbA=="
+  # We don't auto-generate LDAP password when it's not provided as we do for other passwords
+---
+# Source: orbital/templates/configmap-orbital.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orbital-config
+  namespace: orbital
+data:
+  workspaces.conf: |
+    
+    git {
+     pollFrequency=PT20S
+     repositories=[ {
+     branch=main
+     name=orbital-demo
+     uri="https://andrewgkew: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@github.com/QuadCorps/orbital-demo"
+    } ] }
+  taxi.conf: |
+    
+    name: com.foo/test
+    version: 0.1.0
+    sourceRoot: src/
+    additionalSources: {
+        "@orbital/config": "conf/*.conf"
+      }
+  services.conf: |-
+    { }
+  roles.conf: |-
+    defaultUserRoleMappings {
+      roles = [ "Viewer" ]
+    }
+        
+    defaultApiClientRoleMappings {
+      roles = [ "QueryRunner" ]
+    }
+        
+    grantedAuthorityMappings {
+      Admin {
+        grantedAuthorities = [  
+          "RunQuery",
+          "CancelQuery",
+          "ViewQueryHistory",
+          "ViewHistoricQueryResults",
+          "BrowseCatalog",
+          "BrowseSchema",
+          "EditSchema",
+          "ViewCaskDefinitions",
+          "EditCaskDefinitions",
+          "ViewPipelines",
+          "EditPipelines",
+          "ViewAuthenticationTokens",
+          "EditAuthenticationTokens",
+          "ViewConnections",
+          "EditConnections",
+          "ViewUsers",
+          "EditUsers"
+        ]
+    }
+        
+    Viewer {
+      grantedAuthorities = [ "BrowseCatalog" ]
+    }
+        
+    QueryRunner {
+      grantedAuthorities = [ "RunQuery" ]
+    }
+        
+    PlatformManager {
+      grantedAuthorities = [  
+        "CancelQuery",
+        "ViewQueryHistory",
+        "ViewHistoricQueryResults",
+        "BrowseSchema",
+        "EditSchema",
+        "ViewCaskDefinitions",
+        "EditCaskDefinitions",
+        "ViewPipelines",
+        "EditPipelines",
+        "ViewAuthenticationTokens",
+        "EditAuthenticationTokens",
+        "ViewConnections",
+        "EditConnections"
+        ]
+      }
+    }
+---
+# Source: orbital/templates/configmap-services.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orbital-services-config
+  namespace: orbital
+data:
+  services.conf: |-
+    services {
+      analytics-server {
+          rsocket="tcp://vyne-analytics-server:7654"
+          url="http://orbital-query-analytics"
+      }
+      orbital-server {
+          rsocket="tcp://orbital.orbital.svc.cluster.local:7655"
+          url="http://orbital.orbital.svc.cluster.local:9022"
+      }
+      stream-server {
+          url="http://orbital-stream-server"
+      }
+    }
+---
+# Source: orbital/charts/postgresql/templates/primary/svc-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: orbital-postgresql-hl
+  namespace: "orbital"
+  labels:
+    app.kubernetes.io/instance: orbital
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/version: 16.0.0
+    helm.sh/chart: postgresql-13.2.2
+    app.kubernetes.io/component: primary
+  annotations:
+    # Use this annotation in addition to the actual publishNotReadyAddresses
+    # field below because the annotation will stop being respected soon but the
+    # field is broken in some versions of Kubernetes:
+    # https://github.com/kubernetes/kubernetes/issues/58662
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  # We want all pods in the StatefulSet to have their addresses published for
+  # the sake of the other Postgresql pods even before they're ready, since they
+  # have to be able to talk to each other in order to become ready.
+  publishNotReadyAddresses: true
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: tcp-postgresql
+  selector:
+    app.kubernetes.io/instance: orbital
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/component: primary
+---
+# Source: orbital/charts/postgresql/templates/primary/svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: orbital-postgresql
+  namespace: "orbital"
+  labels:
+    app.kubernetes.io/instance: orbital
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/version: 16.0.0
+    helm.sh/chart: postgresql-13.2.2
+    app.kubernetes.io/component: primary
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: tcp-postgresql
+      nodePort: null
+  selector:
+    app.kubernetes.io/instance: orbital
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/component: primary
+---
+# Source: orbital/templates/service-orbital.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: orbital
+  namespace: orbital
+  labels:
+    app.kubernetes.io/name: orbital
+    app.kubernetes.io/instance: orbital
+spec:
+  type: NodePort
+  ports:
+    - name: orbital-svc
+      port: 9022
+      targetPort: 9022
+      appProtocol: http
+      protocol: TCP
+    - name: rsocket-tcp
+      port: 7655
+      targetPort: 7655
+      appProtocol: tcp
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: orbital
+    app.kubernetes.io/instance: orbital
+---
+# Source: orbital/templates/service-stream-server.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: orbital-stream-server
+  namespace: orbital
+  labels:
+    app.kubernetes.io/name: stream-server
+    app.kubernetes.io/instance: orbital
+spec:
+  type: NodePort
+  ports:
+    - name: orbital-stream-server
+      port: 9615
+      targetPort: 9615
+      appProtocol: http
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: stream-server
+    app.kubernetes.io/instance: orbital
+---
+# Source: orbital/templates/deployment-orbital.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orbital
+  namespace: orbital
+  labels:
+    app.kubernetes.io/name: orbital
+    helm.sh/chart: orbital-0.5.0
+    app.kubernetes.io/instance: "orbital"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "0.25.0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: orbital
+      app.kubernetes.io/instance: orbital
+  template:
+    metadata:
+      
+      labels:
+        app.kubernetes.io/name: orbital
+        helm.sh/chart: orbital-0.5.0
+        app.kubernetes.io/instance: "orbital"
+        app.kubernetes.io/managed-by: "Helm"
+        app.kubernetes.io/version: "0.25.0"
+    spec:
+      serviceAccountName: orbital
+      automountServiceAccountToken: false
+      
+      containers:
+      - name: "orbital"
+        image: orbitalhq/orbital:0.27.0
+        imagePullPolicy: Always
+        env:
+        - name: VYNE_DB_USERNAME
+          value: orbital
+        - name: VYNE_DB_PASSWORD
+          value: orbital
+        - name: VYNE_DB_HOST
+          value: orbital-postgresql.orbital.svc.cluster.local
+        - name: OPTIONS
+          value: >-
+            --vyne.analytics.persistRemoteCallResponses=true
+            --vyne.services.config-file=/opt/service/config/services/services.conf
+            --vyne.workspace.config-file=/opt/service/config/workspaces.conf
+        - name: JAVA_OPTS
+          value: >-
+            -Xms256m
+            -Xmx1024m
+        volumeMounts:
+          - name: orbital-config
+            mountPath: /opt/service/config
+          - name: orbital-services-config
+            mountPath: /opt/service/config/services
+        ports:
+        - name: orbital
+          containerPort: 9022
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/actuator/health
+            port: 9022
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/actuator/health
+            port: 9022
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+      
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: orbital-config
+          configMap:
+            name: orbital-config
+        - name: orbital-services-config
+          configMap:
+            name: orbital-services-config
+        - name: orbital-token
+          secret:
+            secretName: orbital-token
+            items:
+              - key: token
+                path: token
+              - key: ca.crt
+                path: ca.crt
+              - key: namespace
+                path: namespace
+---
+# Source: orbital/templates/deployment-stream-server.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orbital-stream-server
+  namespace: orbital
+  labels:
+    app.kubernetes.io/name: stream-server
+    helm.sh/chart: orbital-0.5.0
+    app.kubernetes.io/instance: "orbital"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "0.25.0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: stream-server
+      app.kubernetes.io/instance: orbital
+  template:
+    metadata:
+      
+      labels:
+        app.kubernetes.io/name: stream-server
+        helm.sh/chart: orbital-0.5.0
+        app.kubernetes.io/instance: "orbital"
+        app.kubernetes.io/managed-by: "Helm"
+        app.kubernetes.io/version: "0.25.0"
+    spec:
+      containers:
+      - name: "orbital"
+        image: orbitalhq/stream-server:0.27.0
+        imagePullPolicy: Always
+        
+        env:
+        - name: OPTIONS
+          value: >-
+            --vyne.services.config-file=/opt/service/config/services/services.conf
+        - name: JAVA_OPTS
+          value: >-
+            -Xms256m
+            -Xmx1024m
+        volumeMounts:
+          - name: orbital-services-config
+            mountPath: /opt/service/config/services
+        ports:
+        - name: stream-server
+          containerPort: 9615
+          protocol: TCP
+        readinessProbe:
+
+          failureThreshold: 3
+          httpGet:
+            path: /api/actuator/health
+            port: 9615
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        livenessProbe:
+
+          failureThreshold: 3
+          httpGet:
+            path: /api/actuator/health
+            port: 9615
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+      
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: orbital-services-config
+          configMap:
+            name: orbital-services-config
+---
+# Source: orbital/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orbital
+  namespace: orbital
+  labels:
+    app.kubernetes.io/name: orbital
+    helm.sh/chart: orbital-0.5.0
+    app.kubernetes.io/instance: "orbital"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "0.25.0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: orbital
+      app.kubernetes.io/instance: orbital
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: orbital
+        helm.sh/chart: orbital-0.5.0
+        app.kubernetes.io/instance: "orbital"
+        app.kubernetes.io/managed-by: "Helm"
+        app.kubernetes.io/version: "0.25.0"
+    spec:
+      containers:
+      - name: "orbital"
+        image: orbitalhq/orbital:0.27.0
+        imagePullPolicy: Always
+        env:
+        - name: OPTIONS
+          value: >-
+            --vyne.analytics.persistRemoteCallResponses=true
+            --vyne.db.username=orbital
+            --vyne.db.password=orbital
+            --vyne.db.host=orbital-postgresql.orbital.svc.cluster.local
+            --vyne.workspace.config-file=/opt/service/config/workspaces.conf
+        - name: JAVA_OPTS
+          value: >-
+            -Xms256m
+            -Xmx1024m
+        volumeMounts:
+          - name: orbital-config
+            mountPath: /opt/service/config
+          - name: orbital-services-config
+            mountPath: /opt/service/config/services
+        ports:
+        - name: orbital
+          containerPort: 9022
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/actuator/health
+            port: 9022
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/actuator/health
+            port: 9022
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+      volumes:
+        - name: orbital-config
+          configMap:
+            name: orbital-config
+        - name: orbital-services-config
+          configMap:
+            name: orbital-services-config
+---
+# Source: orbital/charts/postgresql/templates/primary/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: orbital-postgresql
+  namespace: "orbital"
+  labels:
+    app.kubernetes.io/instance: orbital
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/version: 16.0.0
+    helm.sh/chart: postgresql-13.2.2
+    app.kubernetes.io/component: primary
+spec:
+  replicas: 1
+  serviceName: orbital-postgresql-hl
+  updateStrategy:
+    rollingUpdate: {}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: orbital
+      app.kubernetes.io/name: postgresql
+      app.kubernetes.io/component: primary
+  template:
+    metadata:
+      name: orbital-postgresql
+      labels:
+        app.kubernetes.io/instance: orbital
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: postgresql
+        app.kubernetes.io/version: 16.0.0
+        helm.sh/chart: postgresql-13.2.2
+        app.kubernetes.io/component: primary
+    spec:
+      serviceAccountName: default
+      
+      affinity:
+        podAffinity:
+          
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/instance: orbital
+                    app.kubernetes.io/name: postgresql
+                    app.kubernetes.io/component: primary
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        nodeAffinity:
+          
+      securityContext:
+        fsGroup: 1001
+      hostNetwork: false
+      hostIPC: false
+      containers:
+        - name: postgresql
+          image: docker.io/bitnami/postgresql:16.0.0-debian-11-r15
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: POSTGRESQL_PORT_NUMBER
+              value: "5432"
+            - name: POSTGRESQL_VOLUME_DIR
+              value: "/bitnami/postgresql"
+            - name: PGDATA
+              value: "/bitnami/postgresql/data"
+            # Authentication
+            - name: POSTGRES_USER
+              value: "orbital"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: orbital-postgresql
+                  key: password
+            - name: POSTGRES_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: orbital-postgresql
+                  key: postgres-password
+            - name: POSTGRES_DATABASE
+              value: "orbital"
+            # Replication
+            # Initdb
+            # Standby
+            # LDAP
+            - name: POSTGRESQL_ENABLE_LDAP
+              value: "no"
+            # TLS
+            - name: POSTGRESQL_ENABLE_TLS
+              value: "no"
+            # Audit
+            - name: POSTGRESQL_LOG_HOSTNAME
+              value: "false"
+            - name: POSTGRESQL_LOG_CONNECTIONS
+              value: "false"
+            - name: POSTGRESQL_LOG_DISCONNECTIONS
+              value: "false"
+            - name: POSTGRESQL_PGAUDIT_LOG_CATALOG
+              value: "off"
+            # Others
+            - name: POSTGRESQL_CLIENT_MIN_MESSAGES
+              value: "error"
+            - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
+              value: "pgaudit"
+          ports:
+            - name: tcp-postgresql
+              containerPort: 5432
+          livenessProbe:
+            failureThreshold: 6
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - exec pg_isready -U "orbital" -d "dbname=orbital" -h 127.0.0.1 -p 5432
+          readinessProbe:
+            failureThreshold: 6
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - -e
+                - |
+                  exec pg_isready -U "orbital" -d "dbname=orbital" -h 127.0.0.1 -p 5432
+                  [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
+          resources:
+            limits: {}
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          volumeMounts:
+            - name: dshm
+              mountPath: /dev/shm
+            - name: data
+              mountPath: /bitnami/postgresql
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"

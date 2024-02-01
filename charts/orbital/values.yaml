@@ -31,7 +31,6 @@ orbital:
     enabled: false
     path: /opt/service/config/workspaces.conf
   additionalConfig:
-    workspacesConfig: {}
     taxiConfig: |-
       name: com.foo/test
       version: 0.1.0
