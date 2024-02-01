@@ -90,17 +90,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 {{- end -}}
 
-{{- define "schema.metaLabels" -}}
-app.kubernetes.io/name: schema
-helm.sh/chart: {{ template "orbital.chart" . }}
-app.kubernetes.io/instance: "{{ .Release.Name }}"
-app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- range $key, $value := .Values.orbital.extraLabels }}
-{{ $key }}: {{ $value | quote }}
-{{- end }}
-{{- end -}}
-
 {{- define "orbital.getRepoTag" -}}
 {{- if .unifiedRepoTag }}
 {{- .unifiedRepoTag }}

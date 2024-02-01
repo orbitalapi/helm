@@ -10,12 +10,9 @@ data:
           rsocket="tcp://vyne-analytics-server:7654"
           url="http://orbital-query-analytics"
       }
-      orbital-prometheus {
-          url="http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090"
-      }
       orbital-server {
-          rsocket="tcp://orbital.orbital.svc.cluster.local:7655"
-          url="http://orbital.orbital.svc.cluster.local:9022"
+          rsocket="tcp://orbital.{{ template "orbital.namespace" . }}.svc.cluster.local:7655"
+          url="http://orbital.{{ template "orbital.namespace" . }}.svc.cluster.local:9022"
       }
       stream-server {
           url="http://orbital-stream-server"

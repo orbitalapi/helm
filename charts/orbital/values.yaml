@@ -21,12 +21,11 @@ orbital:
     path: /opt/service/config/workspaces.conf
   additionalConfig:
     workspacesConfig: {}
-    taxiConfig:
+    taxiConfig: |-
       name: com.foo/test
       version: 0.1.0
       sourceRoot: src/
-      additionalSources: |- 
-        {
+      additionalSources: {
           "@orbital/config": "conf/*.conf"
         }
 #    workspacesConfig: |-
