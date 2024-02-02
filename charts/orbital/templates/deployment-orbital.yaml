@@ -45,11 +45,7 @@ spec:
       {{- if or .Values.orbital.serviceAccount.create .Values.orbital.serviceAccount.name }}
       serviceAccountName: {{ template "orbital.serviceAccountName" . }}
       {{- end }}
-      {{- if (and (or .Values.orbital.serviceAccount.create .Values.orbital.serviceAccount.name) .Values.orbital.serviceAccount.automountServiceAccountToken) }}
-      automountServiceAccountToken: true
-      {{- else }}
-      automountServiceAccountToken: false
-      {{ end }}
+      automountServiceAccountToken: {{ .Values.orbital.serviceAccount.automountServiceAccountToken }}
       {{- if .Values.orbital.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.orbital.image.pullSecrets }}
@@ -159,15 +155,3 @@ spec:
         - name: orbital-services-config
           configMap:
             name: orbital-services-config
-          {{- if (and (not .Values.orbital.serviceAccount.automountServiceAccountToken) (or .Values.orbital.serviceAccount.create .Values.orbital.serviceAccount.name)) }}
-        - name: {{ template "orbital.serviceAccountTokenName" . }}
-          secret:
-            secretName: {{ template "orbital.serviceAccountTokenName" . }}
-            items:
-              - key: token
-                path: token
-              - key: ca.crt
-                path: ca.crt
-              - key: namespace
-                path: namespace
-          {{- end }}
