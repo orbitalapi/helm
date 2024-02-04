@@ -5,8 +5,11 @@ kind: Service
 metadata:
   name: orbital
   namespace: {{ template "orbital.namespace" . }}
-  labels:
-    {{- include "orbital.selectorLabels" . | nindent 4 }}
+  labels: {{- include "orbital.selectorLabels" . | nindent 4 }}
+  {{- with $.Values.orbital.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end } }
 spec:
   type: {{ .Values.orbital.service.type }}
   {{- if (eq .Values.orbital.service.type "LoadBalancer") }}

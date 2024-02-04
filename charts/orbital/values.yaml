@@ -91,6 +91,7 @@ orbital:
     loadBalancerClass: ""
     loadBalancerSourceRanges: []
     externalTrafficPolicy: "Cluster"
+    annotations: {}
     supplemental:
       loadBalancerSourceRanges: []
 
