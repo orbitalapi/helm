@@ -86,6 +86,9 @@ orbital:
     # nodePort: 32080
     # Set a host port
     # hostPort:
+    # allows to pass through additional service parameters not defined above
+    supplemental:
+      loadBalancerSourceRanges: []
 
   ingress:
     # Enable/disable exposure using ingress.

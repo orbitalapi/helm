@@ -1,4 +1,5 @@
 ---
+{{- $supplemental := omit $Values.orbital.service.supplemental "type" "ports" "selector" }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -24,3 +25,7 @@ spec:
       protocol: TCP
   selector:
     {{- include "orbital.selectorLabels" . | nindent 4 }}
+
+{{- if $supplemental }}
+  {{- toYaml $supplemental | nindent 2 }}
+{{- end }}
