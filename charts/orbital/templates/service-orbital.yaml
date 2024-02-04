@@ -9,6 +9,12 @@ metadata:
     {{- include "orbital.selectorLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.orbital.service.type }}
+  {{- if (eq .Values.orbital.service.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.orbital.service.loadBalancerIP }}
+  loadBalancerSourceRanges: {{- toYaml .Values.orbital.service.loadBalancerSourceRanges | nindent 4 }}
+  loadBalancerClass: {{ .Values.orbital.service.loadBalancerClass }}
+  {{- end }}
+  externalTrafficPolicy: {{ .Values.orbital.service.externalTrafficPolicy }}
   ports:
     - name: orbital-svc
       port: {{ .Values.orbital.service.servicePort }}

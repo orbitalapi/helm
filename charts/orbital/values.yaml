@@ -87,6 +87,10 @@ orbital:
     # Set a host port
     # hostPort:
     # allows to pass through additional service parameters not defined above
+    loadBalancerIP: ""
+    loadBalancerClass: ""
+    loadBalancerSourceRanges: []
+    externalTrafficPolicy: "Cluster"
     supplemental:
       loadBalancerSourceRanges: []
 
