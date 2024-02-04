@@ -70,32 +70,34 @@ spec:
         {{- if not (empty .Values.orbital.containerSecurityContext) }}
         securityContext: {{- toYaml .Values.orbital.containerSecurityContext | nindent 10 }}
         {{- end }}
+
+        {{ $defaultEnv := include "orbital.defaultEnv" . | fromYaml }}
         env:
           {{- range .Values.orbital.env }}
         - name: {{ .name }}
           value: {{ .value }}
           {{- end }}
-        - name: OPTIONS
-          value: >-
-            --vyne.analytics.persistRemoteCallResponses={{ .Values.orbital.persistRemoteCallResponses }}
-            --vyne.services.config-file=/opt/service/config/services/services.conf
-            {{- if .Values.orbital.security.enabled }}
-            --vyne.security.openIdp.enabled=true
-            --vyne.security.openIdp.jwks-uri={{ .Values.orbital.security.jwksUri }}
-            --vyne.security.openIdp.issuerUrl={{ .Values.orbital.security.issuerUrl }}
-            --vyne.security.openIdp.clientId={{ .Values.orbital.security.clientId }}
-            --vyne.security.openIdp.scope={{ .Values.orbital.security.scope }}
-            --vyne.security.openIdp.require-https={{ .Values.orbital.security.requireHttps }}
-            {{- end }}
-            {{- if .Values.orbital.project.enabled }}
-            --vyne.workspace.project-file={{ .Values.orbital.project.path }}
-            {{- else }}
-            --vyne.workspace.config-file={{ .Values.orbital.workspace.path }}
-            {{- end }}
-        - name: JAVA_OPTS
-          value: >-
-            -XX:MaxRAMPercentage=75
-            -XX:MinRAMPercentage=75
+          {{- range $varName, $varValue := $defaultEnv }}
+        - name: {{ $varName }}
+          {{- toYaml $varValue | nindent 10 }}
+          {{- end }}
+
+        {{- if or (not (empty .Values.orbital.config)) (not (empty .Values.orbital.secretConfig)) }}
+        envFrom:
+        {{- if not (empty .Values.orbital.config) }}
+          - configMapRef:
+              {{- range .Values.orbital.config }}
+              name: {{ . }}
+              {{- end }}
+        {{- end }}
+        {{- if not (empty .Values.orbital.secretConfig) }}
+          - secretRef:
+              {{- range .Values.orbital.secretConfig }}
+              name: {{ . }}
+              {{- end }}
+        {{- end }}
+        {{- end }}
+
         {{- if .Values.orbital.lifecycle }}
         lifecycle: {{- toYaml .Values.orbital.lifecycle | nindent 10 }}
         {{- end }}

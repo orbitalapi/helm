@@ -4,16 +4,14 @@ namespace: ""
 fullnameOverride: ""
 
 orbital:
-  env:
-    - name: VYNE_DB_USERNAME
-      value: orbital
-    - name: VYNE_DB_PASSWORD
-      value: orbital
-#      secretKeyRef:
-#        key: dbpassword
-#        name: orbitalcredentials
-#    - name: VYNE_DB_HOST
-#      value:
+  #set env variables in pod
+  env: []
+
+  #mount config map with env vars
+  config: []
+
+  #mount secret with env vars
+  secretConfig: []
 
   security:
     enabled: false
@@ -225,6 +223,15 @@ orbital:
   nodeSelector: {}
 
 streamServer:
+  #set env variables in pod
+  env: []
+
+  #mount config map with env vars
+  config: []
+
+  #mount secret with env vars
+  secretConfig: []
+
   image:
     repository: orbitalhq/stream-server
     tag: "latest"
@@ -326,12 +333,12 @@ streamServer:
   # Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
   lifecycle: {}
 
-  resources: {}
-#    limits:
-#      memory: 2G
-#    requests:
-#      cpu: 1
-#      memory: 2G
+  resources:
+    limits:
+      memory: 1Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
 
   # Affinity for pod assignment
   # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity

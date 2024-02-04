@@ -51,14 +51,34 @@ spec:
         {{ if not (empty .Values.streamServer.containerSecurityContext) }}
         securityContext: {{- toYaml .Values.streamServer.containerSecurityContext | nindent 10 }}
         {{- end }}
+
+        {{ $defaultEnvStreamServer := include "streamserver.defaultEnv" . | fromYaml }}
         env:
-        - name: OPTIONS
-          value: >-
-            --vyne.services.config-file=/opt/service/config/services/services.conf
-        - name: JAVA_OPTS
-          value: >-
-            -Xms256m
-            -Xmx1024m
+          {{- range .Values.streamServer.env }}
+          - name: {{ .name }}
+            value: {{ .value }}
+          {{- end }}
+          {{- range $varName, $varValue := $defaultEnvStreamServer }}
+          - name: {{ $varName }}
+            {{- toYaml $varValue | nindent 12 }}
+          {{- end }}
+
+        {{- if or (not (empty .Values.streamServer.config)) (not (empty .Values.streamServer.secretConfig)) }}
+        envFrom:
+        {{- if not (empty .Values.streamServer.config) }}
+        - configMapRef:
+            {{- range .Values.streamServer.config }}
+            name: {{ . }}
+            {{- end }}
+        {{- end }}
+        {{- if not (empty .Values.streamServer.secretConfig) }}
+        - secretRef:
+            {{- range .Values.streamServer.secretConfig }}
+            name: {{ . }}
+            {{- end }}
+        {{- end }}
+        {{- end }}
+
         {{- if .Values.streamServer.lifecycle }}
         lifecycle: {{- toYaml .Values.streamServer.lifecycle | nindent 10 }}
         {{- end }}

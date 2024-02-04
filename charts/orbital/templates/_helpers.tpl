@@ -135,3 +135,40 @@ autoscaling/v2beta2
 autoscaling/v1
 {{- end -}}
 {{- end -}}
+
+{{/*
+Default environment variable configuration for orbital containers
+*/}}
+{{- define "orbital.defaultEnv" -}}
+OPTIONS:
+  value: >-
+    --vyne.analytics.persistRemoteCallResponses={{ .Values.orbital.persistRemoteCallResponses }}
+    --vyne.services.config-file=/opt/service/config/services/services.conf
+    {{- if .Values.orbital.security.enabled }}
+    --vyne.security.openIdp.enabled=true
+    --vyne.security.openIdp.jwks-uri={{ .Values.orbital.security.jwksUri }}
+    --vyne.security.openIdp.issuerUrl={{ .Values.orbital.security.issuerUrl }}
+    --vyne.security.openIdp.clientId={{ .Values.orbital.security.clientId }}
+    --vyne.security.openIdp.scope={{ .Values.orbital.security.scope }}
+    --vyne.security.openIdp.require-https={{ .Values.orbital.security.requireHttps }}
+    {{- end }}
+    {{- if .Values.orbital.project.enabled }}
+    --vyne.workspace.project-file={{ .Values.orbital.project.path }}
+    {{- else }}
+    --vyne.workspace.config-file={{ .Values.orbital.workspace.path }}
+    {{- end }}
+JAVA_OPTS:
+  value: >-
+    -XX:MaxRAMPercentage=75
+    -XX:MinRAMPercentage=75
+{{- end }}
+
+{{- define "streamserver.defaultEnv" -}}
+OPTIONS:
+  value: >-
+    --vyne.services.config-file=/opt/service/config/services/services.conf
+JAVA_OPTS:
+  value: >-
+    -XX:MaxRAMPercentage=75
+    -XX:MinRAMPercentage=75
+{{- end }}
