@@ -4,8 +4,7 @@ kind: Deployment
 metadata:
   name: {{ template "orbital.fullname" . }}
   namespace: {{ template "orbital.namespace" . }}
-  labels:
-{{- include "orbital.metaLabels" . | nindent 4 }}
+  labels: {{- include "orbital.metaLabels" . | nindent 4 }}
   {{- if not (empty .Values.orbital.deploymentAnnotations) }}
   annotations:
   {{- range $key, $value := .Values.orbital.deploymentAnnotations }}
@@ -17,14 +16,12 @@ spec:
   replicas: {{ .Values.orbital.replicaCount }}
   {{- end }}
   selector:
-    matchLabels:
-{{- include "orbital.selectorLabels" . | nindent 6 }}
+    matchLabels: {{- include "orbital.selectorLabels" . | nindent 6 }}
   {{- if not (empty .Values.orbital.updateStrategy) }}
-  strategy:
-{{ toYaml .Values.orbital.updateStrategy | indent 4 }}
+  strategy: {{- toYaml .Values.orbital.updateStrategy | nindent 4 }}
   {{- end }}
   {{- if .Values.orbital.deploymentMinReadySeconds }}
-  minReadySeconds: { { .Values.orbital.deploymentMinReadySeconds }}
+  minReadySeconds: {{ .Values.orbital.deploymentMinReadySeconds }}
   {{- end }}
   template:
     metadata:
@@ -36,10 +33,9 @@ spec:
         {{- end }}
         {{- end }}
       {{- end }}
-      labels:
-{{- include "orbital.metaLabels" . | nindent 8 }}
+      labels: {{- include "orbital.metaLabels" . | nindent 8 }}
        {{- if not (empty .Values.orbital.podLabels) }}
-{{ toYaml .Values.orbital.podLabels | nindent 8 }}
+{{- toYaml .Values.orbital.podLabels | nindent 8 }}
        {{- end }}
     spec:
       {{- if or .Values.orbital.serviceAccount.create .Values.orbital.serviceAccount.name }}
@@ -59,23 +55,20 @@ spec:
       priorityClassName: "{{ .Values.orbital.priorityClassName }}"
       {{- end }}
       {{- if .Values.orbital.hostAliases }}
-      hostAliases:
-{{- toYaml .Values.orbital.hostAliases | nindent 6 }}
+      hostAliases: {{- toYaml .Values.orbital.hostAliases | nindent 6 }}
       {{- end }}
       {{- if .Values.orbital.dnsPolicy }}
       dnsPolicy: {{ .Values.orbital.dnsPolicy | quote }}
       {{- end }}
       {{- if .Values.orbital.dnsConfig }}
-      dnsConfig:
-{{ toYaml .Values.orbital.dnsConfig | indent 8 }}
+      dnsConfig: {{- toYaml .Values.orbital.dnsConfig | nindent 8 }}
       {{- end }}
       containers:
       - name: "orbital"
         image: {{ .Values.orbital.image.repository }}:{{ .Values.orbital.image.tag }}
         imagePullPolicy: {{ .Values.orbital.image.pullPolicy }}
         {{- if not (empty .Values.orbital.containerSecurityContext) }}
-        securityContext:
-{{ toYaml .Values.orbital.containerSecurityContext | nindent 10 }}
+        securityContext: {{- toYaml .Values.orbital.containerSecurityContext | nindent 10 }}
         {{- end }}
         env:
           {{- range .Values.orbital.env }}
@@ -104,8 +97,7 @@ spec:
             -XX:MaxRAMPercentage=75
             -XX:MinRAMPercentage=75
         {{- if .Values.orbital.lifecycle }}
-        lifecycle:
-{{- toYaml .Values.orbital.lifecycle | nindent 10 }}
+        lifecycle: {{- toYaml .Values.orbital.lifecycle | nindent 10 }}
         {{- end }}
         volumeMounts:
           - name: orbital-config
@@ -119,34 +111,26 @@ spec:
           hostPort: { { .Values.orbital.service.hostPort }}
           {{- end }}
           protocol: TCP
-        readinessProbe:
-{{ toYaml .Values.orbital.readinessProbe | indent 10 }}
-        livenessProbe:
-{{ toYaml .Values.orbital.livenessProbe | indent 10 }}
+        readinessProbe: {{- toYaml .Values.orbital.readinessProbe | nindent 10 }}
+        livenessProbe: {{- toYaml .Values.orbital.livenessProbe | nindent 10 }}
         {{- if .Values.orbital.resources }}
-        resources:
-{{ toYaml .Values.orbital.resources | indent 10 }}
+        resources: {{- toYaml .Values.orbital.resources | nindent 10 }}
         {{- end }}
       {{- if .Values.orbital.affinity }}
-      affinity:
-{{ toYaml .Values.orbital.affinity | indent 8 }}
+      affinity: {{- toYaml .Values.orbital.affinity | nindent 8 }}
       {{- end }}
       {{- if .Values.orbital.topologySpreadConstraints }}
-      topologySpreadConstraints:
-{{ toYaml .Values.orbital.topologySpreadConstraints | indent 8 }}
+      topologySpreadConstraints: {{- toYaml .Values.orbital.topologySpreadConstraints | nindent 8 }}
       {{- end }}
       {{ if not (empty .Values.orbital.securityContext) }}
-      securityContext:
-{{ toYaml .Values.orbital.securityContext | nindent 8 }}
+      securityContext: {{- toYaml .Values.orbital.securityContext | nindent 8 }}
       {{- end }}
       {{- if .Values.orbital.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.orbital.nodeSelector | indent 8 }}
+      nodeSelector: {{- toYaml .Values.orbital.nodeSelector | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.orbital.terminationGracePeriodSeconds }}
       {{- if .Values.orbital.tolerations }}
-      tolerations:
-{{ toYaml .Values.orbital.tolerations | indent 8 }}
+      tolerations: {{- toYaml .Values.orbital.tolerations | nindent 8 }}
       {{- end }}
       volumes:
         - name: orbital-config
