@@ -191,12 +191,12 @@ orbital:
   # Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
   lifecycle: {}
 
-  resources: {}
-#    limits:
-#      memory: 2G
-#    requests:
-#      cpu: 1
-#      memory: 2G
+  resources:
+    limits:
+      memory: 1Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
 
   # Affinity for pod assignment
   # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity

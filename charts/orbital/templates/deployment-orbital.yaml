@@ -101,8 +101,8 @@ spec:
             {{- end }}
         - name: JAVA_OPTS
           value: >-
-            -Xms256m
-            -Xmx1024m
+            -XX:MaxRAMPercentage=75
+            -XX:MinRAMPercentage=75
         {{- if .Values.orbital.lifecycle }}
         lifecycle:
 {{- toYaml .Values.orbital.lifecycle | nindent 10 }}
