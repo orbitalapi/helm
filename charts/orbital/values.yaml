@@ -180,6 +180,16 @@ orbital:
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
+#  startupProbe:
+#    httpGet:
+#      path: ""
+#      port: 0
+#      scheme: HTTP
+#    initialDelaySeconds: 5
+#    timeoutSeconds: 5
+#    periodSeconds: 10
+#    successThreshold: 1
+#    failureThreshold: 3
 
   # securityContext for orbital pods.
   securityContext: {}
@@ -295,6 +305,16 @@ streamServer:
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
+#  startupProbe:
+#    httpGet:
+#      path: ""
+#      port: 0
+#      scheme: HTTP
+#    initialDelaySeconds: 5
+#    timeoutSeconds: 5
+#    periodSeconds: 10
+#    successThreshold: 1
+#    failureThreshold: 3
 
   # securityContext for stream server pods.
   securityContext: {}

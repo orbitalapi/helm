@@ -113,6 +113,9 @@ spec:
           protocol: TCP
         readinessProbe: {{- toYaml .Values.orbital.readinessProbe | nindent 10 }}
         livenessProbe: {{- toYaml .Values.orbital.livenessProbe | nindent 10 }}
+        {{- if .Values.orbital.startupProbe }}
+        startupProbe: {{- toYaml .Values.orbital.startupProbe | nindent 10 }}
+        {{- end }}
         {{- if .Values.orbital.resources }}
         resources: {{- toYaml .Values.orbital.resources | nindent 10 }}
         {{- end }}
