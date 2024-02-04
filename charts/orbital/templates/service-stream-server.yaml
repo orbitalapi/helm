@@ -4,8 +4,7 @@ kind: Service
 metadata:
   name: orbital-stream-server
   namespace: {{ template "orbital.namespace" . }}
-  labels:
-    {{- include "streamServer.selectorLabels" . | nindent 4 }}
+  labels: {{- include "streamServer.selectorLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.streamServer.service.type }}
   ports:
@@ -17,5 +16,4 @@ spec:
       {{- if (and (or (eq .Values.streamServer.service.type "LoadBalancer") (eq .Values.streamServer.service.type "NodePort")) (not (empty .Values.streamServer.service.nodePort))) }}
       nodePort: {{ .Values.streamServer.service.nodePort }}
       {{- end }}
-  selector:
-    {{- include "streamServer.selectorLabels" . | nindent 4 }}
+  selector: {{- include "streamServer.selectorLabels" . | nindent 4 }}

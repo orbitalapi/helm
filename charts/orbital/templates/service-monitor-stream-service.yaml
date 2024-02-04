@@ -6,8 +6,7 @@ metadata:
   name: stream-server-service-monitor
 spec:
   selector:
-    matchLabels:
-      {{- include "streamServer.selectorLabels" . | nindent 6 }}
+    matchLabels: {{- include "streamServer.selectorLabels" . | nindent 6 }}
   endpoints:
   - port: 'stream-server'
     path: /api/actuator/prometheus

@@ -4,8 +4,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: "{{ template "orbital.fullname" . }}"
   namespace:  {{ template "orbital.namespace" . }}
-  labels:
-    {{- include "orbital.metaLabels" . | nindent 4 }}
+  labels: {{- include "orbital.metaLabels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -14,13 +13,11 @@ spec:
   minReplicas: {{ .Values.orbital.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.orbital.autoscaling.maxReplicas }}
   {{- if .Values.orbital.autoscaling.behavior }}
-  behavior:
-    {{- toYaml .Values.orbital.autoscaling.behavior | nindent 4 }}
+  behavior: {{- toYaml .Values.orbital.autoscaling.behavior | nindent 4 }}
   {{- end }}
   {{- if not (.Capabilities.APIVersions.Has "autoscaling/v2beta2") }}
   targetCPUUtilizationPercentage: {{ .Values.orbital.autoscaling.targetCPUUtilizationPercentage | default 80 }}
   {{- else }}
-  metrics:
-    {{- toYaml .Values.orbital.autoscaling.metrics | nindent 4 }}
+  metrics: {{- toYaml .Values.orbital.autoscaling.metrics | nindent 4 }}
   {{- end }}
   {{- end }}

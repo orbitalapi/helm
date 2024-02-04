@@ -32,8 +32,7 @@ spec:
       targetPort: 7655
       appProtocol: tcp
       protocol: TCP
-  selector:
-    {{- include "orbital.selectorLabels" . | nindent 4 }}
+  selector: {{- include "orbital.selectorLabels" . | nindent 4 }}
 
 {{- if $supplemental }}
   {{- toYaml $supplemental | nindent 2 }}

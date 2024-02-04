@@ -6,8 +6,7 @@ metadata:
   name: orbital-service-monitor
 spec:
   selector:
-    matchLabels:
-      {{- include "orbital.selectorLabels" . | nindent 6 }}
+    matchLabels: {{- include "orbital.selectorLabels" . | nindent 6 }}
   endpoints:
   - port: 'orbital'
     path: /api/actuator/prometheus
