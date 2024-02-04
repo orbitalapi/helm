@@ -1,5 +1,5 @@
 ---
-{{- $supplemental := omit $Values.orbital.service.supplemental "type" "ports" "selector" }}
+{{- $supplemental := omit $.Values.orbital.service.supplemental "type" "ports" "selector" }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,7 +9,7 @@ metadata:
   {{- with $.Values.orbital.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
-  {{- end } }
+  {{- end }}
 spec:
   type: {{ .Values.orbital.service.type }}
   {{- if (eq .Values.orbital.service.type "LoadBalancer") }}
