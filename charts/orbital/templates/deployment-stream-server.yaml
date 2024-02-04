@@ -4,8 +4,7 @@ kind: Deployment
 metadata:
   name: orbital-stream-server
   namespace: {{ template "orbital.namespace" . }}
-  labels:
-{{- include "streamServer.metaLabels" . | nindent 4 }}
+  labels: {{- include "streamServer.metaLabels" . | nindent 4 }}
   {{- if not (empty .Values.streamServer.deploymentAnnotations) }}
   annotations:
   {{- range $key, $value := .Values.streamServer.deploymentAnnotations }}
@@ -17,11 +16,9 @@ spec:
   replicas: {{ .Values.streamServer.replicaCount }}
   {{- end }}
   selector:
-    matchLabels:
-{{- include "streamServer.selectorLabels" . | nindent 6 }}
+    matchLabels: {{- include "streamServer.selectorLabels" . | nindent 6 }}
   {{- if not (empty .Values.streamServer.updateStrategy) }}
-  strategy:
-{{ toYaml .Values.streamServer.updateStrategy | indent 4 }}
+  strategy: {{- toYaml .Values.streamServer.updateStrategy | nindent 4 }}
   {{- end }}
   {{- if .Values.streamServer.deploymentMinReadySeconds }}
   minReadySeconds: {{ .Values.streamServer.deploymentMinReadySeconds }}
@@ -36,10 +33,9 @@ spec:
         {{- end }}
         {{- end }}
       {{- end }}
-      labels:
-{{- include "streamServer.metaLabels" . | nindent 8 }}
+      labels: {{- include "streamServer.metaLabels" . | nindent 8 }}
        {{- if not (empty .Values.streamServer.podLabels) }}
-{{ toYaml .Values.streamServer.podLabels | nindent 8 }}
+         {{- toYaml .Values.streamServer.podLabels | nindent 8 }}
        {{- end }}
     spec:
       {{- if .Values.streamServer.image.pullSecrets }}
@@ -53,8 +49,7 @@ spec:
         image: {{ .Values.streamServer.image.repository }}:{{ .Values.streamServer.image.tag }}
         imagePullPolicy: {{ .Values.streamServer.image.pullPolicy }}
         {{ if not (empty .Values.streamServer.containerSecurityContext) }}
-        securityContext:
-{{ toYaml .Values.streamServer.containerSecurityContext | nindent 10 }}
+        securityContext: {{- toYaml .Values.streamServer.containerSecurityContext | nindent 10 }}
         {{- end }}
         env:
         - name: OPTIONS
@@ -65,8 +60,7 @@ spec:
             -Xms256m
             -Xmx1024m
         {{- if .Values.streamServer.lifecycle }}
-        lifecycle:
-{{- toYaml .Values.streamServer.lifecycle | nindent 10 }}
+        lifecycle: {{- toYaml .Values.streamServer.lifecycle | nindent 10 }}
         {{- end }}
         volumeMounts:
           - name: orbital-services-config
@@ -78,34 +72,26 @@ spec:
           hostPort: {{ .Values.streamServer.service.hostPort }}
           {{- end }}
           protocol: TCP
-        readinessProbe:
-{{ toYaml .Values.streamServer.readinessProbe | nindent 10 }}
-        livenessProbe:
-{{ toYaml .Values.streamServer.livenessProbe | nindent 10 }}
+        readinessProbe: {{- toYaml .Values.streamServer.readinessProbe | nindent 10 }}
+        livenessProbe: {{- toYaml .Values.streamServer.livenessProbe | nindent 10 }}
         {{- if .Values.streamServer.resources }}
-        resources:
-{{ toYaml .Values.streamServer.resources | indent 10 }}
+        resources: {{- toYaml .Values.streamServer.resources | nindent 10 }}
         {{- end }}
       {{- if .Values.streamServer.affinity }}
-      affinity:
-{{ toYaml .Values.streamServer.affinity | indent 8 }}
+      affinity: {{- toYaml .Values.streamServer.affinity | nindent 8 }}
       {{- end }}
       {{- if .Values.streamServer.topologySpreadConstraints }}
-      topologySpreadConstraints:
-{{ toYaml .Values.streamServer.topologySpreadConstraints | indent 8 }}
+      topologySpreadConstraints: {{- toYaml .Values.streamServer.topologySpreadConstraints | nindent 8 }}
       {{- end }}
       {{ if not (empty .Values.streamServer.securityContext) }}
-      securityContext:
-{{ toYaml .Values.streamServer.securityContext | nindent 8 }}
+      securityContext: {{- toYaml .Values.streamServer.securityContext | nindent 8 }}
       {{- end }}
       {{- if .Values.streamServer.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.streamServer.nodeSelector | indent 8 }}
+      nodeSelector: {{- toYaml .Values.streamServer.nodeSelector | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.streamServer.terminationGracePeriodSeconds }}
       {{- if .Values.streamServer.tolerations }}
-      tolerations:
-{{ toYaml .Values.streamServer.tolerations | indent 8 }}
+      tolerations: {{- toYaml .Values.streamServer.tolerations | nindent 8 }}
       {{- end }}
       volumes:
         - name: orbital-services-config
