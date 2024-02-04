@@ -10,8 +10,6 @@ data:
   {{- end}}
   taxi.conf: |
     {{ .Values.orbital.additionalConfig.taxiConfig | nindent 4 }}
-  services.conf: |-
-    { }
   roles.conf: |-
     defaultUserRoleMappings {
       roles = [ "Viewer" ]
