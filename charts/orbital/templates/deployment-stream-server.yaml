@@ -83,6 +83,8 @@ spec:
         lifecycle: {{- toYaml .Values.streamServer.lifecycle | nindent 10 }}
         {{- end }}
         volumeMounts:
+          - name: tmp-dir
+            mountPath: /tmp
           - name: orbital-services-config
             mountPath: /opt/service/config/services
         ports:
@@ -126,6 +128,8 @@ spec:
       tolerations: {{- toYaml .Values.streamServer.tolerations | nindent 8 }}
       {{- end }}
       volumes:
+        - name: tmp-dir
+          emptyDir: {}
         - name: orbital-services-config
           configMap:
             name: {{ template "orbital.fullname" . }}-services-config
