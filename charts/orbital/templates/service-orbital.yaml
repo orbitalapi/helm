@@ -16,7 +16,9 @@ spec:
   loadBalancerSourceRanges: {{- toYaml .Values.orbital.service.loadBalancerSourceRanges | nindent 4 }}
   loadBalancerClass: {{ .Values.orbital.service.loadBalancerClass }}
   {{- end }}
+  {{- if (or (eq .Values.orbital.service.type "LoadBalancer") (eq .Values.orbital.service.type "NodePort")) }}
   externalTrafficPolicy: {{ .Values.orbital.service.externalTrafficPolicy }}
+  {{- end }}
   ports:
     - name: orbital-svc
       port: {{ .Values.orbital.service.servicePort }}
