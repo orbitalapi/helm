@@ -83,7 +83,7 @@ orbital:
 
   service:
     enabled: true
-    type: NodePort
+    type: ClusterIP
     servicePort: 9022
     containerPort: 9022
     # Set a node port which is available if service type is NodePort
@@ -276,7 +276,7 @@ streamServer:
   #deploymentMinReadySeconds: 60
   service:
     enabled: true
-    type: NodePort
+    type: ClusterIP
     servicePort: 9615
     containerPort: 9615
     # Set a nodePort which is available if service type is NodePort
