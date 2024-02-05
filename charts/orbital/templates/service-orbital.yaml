@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: orbital
+  name: {{ template "orbital.fullname" . }}
   namespace: {{ template "orbital.namespace" . }}
   labels: {{- include "orbital.selectorLabels" . | nindent 4 }}
   {{- with $.Values.orbital.service.annotations }}

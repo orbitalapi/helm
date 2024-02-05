@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orbital-stream-server
+  name: {{ template "orbital.fullname" . }}-stream-server
   namespace: {{ template "orbital.namespace" . }}
   labels: {{- include "streamServer.metaLabels" . | nindent 4 }}
   {{- if not (empty .Values.streamServer.deploymentAnnotations) }}
@@ -119,4 +119,4 @@ spec:
       volumes:
         - name: orbital-services-config
           configMap:
-            name: orbital-services-config
+            name: {{ template "orbital.fullname" . }}-services-config

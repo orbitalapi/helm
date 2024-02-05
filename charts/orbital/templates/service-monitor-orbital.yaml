@@ -3,7 +3,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: orbital-service-monitor
+  name: {{ template "orbital.fullname" . }}-service-monitor
 spec:
   selector:
     matchLabels: {{- include "orbital.selectorLabels" . | nindent 6 }}

@@ -22,11 +22,11 @@ spec:
       paths:
         - backend:
           {{- if (not (eq "$orbital.ingressVersion" "networking.k8s.io/v1")) }}
-          serviceName: orbital
+          serviceName: {{ template "orbital.fullname" . }}
           servicePort: {{ .Values.orbital.service.servicePort }}
           {{- else }}
           service:
-            name: orbital
+            name: {{ template "orbital.fullname" . }}
             port:
               number: {{ .Values.orbital.service.servicePort }}
           {{- end }}

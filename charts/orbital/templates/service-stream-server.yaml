@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: orbital-stream-server
+  name: {{ template "orbital.fullname" . }}-stream-server
   namespace: {{ template "orbital.namespace" . }}
   labels: {{- include "streamServer.selectorLabels" . | nindent 4 }}
 spec:

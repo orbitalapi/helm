@@ -140,7 +140,7 @@ spec:
       volumes:
         - name: orbital-config
           configMap:
-            name: orbital-config
+            name: {{ template "orbital.fullname" . }}-config
         - name: orbital-services-config
           configMap:
-            name: orbital-services-config
+            name: {{ template "orbital.fullname" . }}-services-config

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: orbital-config
+  name: {{ template "orbital.fullname" . }}-config
   namespace: {{ template "orbital.namespace" . }}
 data:
   {{- if not (empty .Values.orbital.additionalConfig.workspacesConfig) }}

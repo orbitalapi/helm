@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: orbital-services-config
+  name: {{ template "orbital.fullname" . }}-services-config
   namespace: {{ template "orbital.namespace" . }}
 data:
   services.conf: |-

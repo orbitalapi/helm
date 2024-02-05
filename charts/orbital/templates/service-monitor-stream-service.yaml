@@ -3,7 +3,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: stream-server-service-monitor
+  name: {{ template "orbital.fullname" . }}-stream-server-service-monitor
 spec:
   selector:
     matchLabels: {{- include "streamServer.selectorLabels" . | nindent 6 }}
