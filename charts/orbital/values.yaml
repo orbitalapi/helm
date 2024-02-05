@@ -1,6 +1,3 @@
-#use this to override the namespace other than the helm release
-namespace: ""
-
 fullnameOverride: ""
 
 orbital:

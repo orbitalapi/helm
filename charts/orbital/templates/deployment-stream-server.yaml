@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "orbital.fullname" . }}-stream-server
-  namespace: {{ template "orbital.namespace" . }}
   labels: {{- include "streamServer.metaLabels" . | nindent 4 }}
   {{- if not (empty .Values.streamServer.deploymentAnnotations) }}
   annotations:

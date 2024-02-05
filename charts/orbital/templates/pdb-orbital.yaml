@@ -3,7 +3,6 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "orbital.fullname" . }}
-  namespace: {{ template "orbital.namespace" . }}
   labels: {{- include "orbital.metaLabels" . | nindent 4 }}
 spec:
   {{- if .Values.orbital.podDisruptionBudget.minAvailable }}

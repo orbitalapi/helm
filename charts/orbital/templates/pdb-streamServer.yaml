@@ -3,7 +3,6 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "orbital.fullname" . }}-stream-server
-  namespace: {{ template "orbital.namespace" . }}
   labels: {{- include "streamServer.metaLabels" . | nindent 4 }}
 spec:
   {{- if .Values.streamServer.podDisruptionBudget.minAvailable }}
