@@ -47,7 +47,8 @@ orbital:
 
   image:
     repository: orbitalhq/orbital
-    tag: "latest"
+    # Defaults to the chart appVersion
+    tag: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -178,16 +179,16 @@ orbital:
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
-#  startupProbe:
-#    httpGet:
-#      path: ""
-#      port: 0
-#      scheme: HTTP
-#    initialDelaySeconds: 5
-#    timeoutSeconds: 5
-#    periodSeconds: 10
-#    successThreshold: 1
-#    failureThreshold: 3
+  startupProbe:
+    httpGet:
+      path: "/api/actuator/health"
+      port: 9022
+      scheme: HTTP
+    initialDelaySeconds: 1
+    timeoutSeconds: 3
+    periodSeconds: 5
+    successThreshold: 1
+    failureThreshold: 12
 
   # securityContext for orbital pods.
   securityContext: {}
@@ -237,7 +238,8 @@ streamServer:
 
   image:
     repository: orbitalhq/stream-server
-    tag: "latest"
+    # Defaults to the chart appVersion
+    tag: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -315,16 +317,16 @@ streamServer:
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
-#  startupProbe:
-#    httpGet:
-#      path: ""
-#      port: 0
-#      scheme: HTTP
-#    initialDelaySeconds: 5
-#    timeoutSeconds: 5
-#    periodSeconds: 10
-#    successThreshold: 1
-#    failureThreshold: 3
+  startupProbe:
+    httpGet:
+      path: "/api/actuator/health"
+      port: 9615
+      scheme: HTTP
+    initialDelaySeconds: 1
+    timeoutSeconds: 3
+    periodSeconds: 5
+    successThreshold: 1
+    failureThreshold: 12
 
   # securityContext for stream server pods.
   securityContext: {}
@@ -363,7 +365,7 @@ streamServer:
   nodeSelector: { }
 
 postgresql:
-  enabled: true
+  enabled: false
   auth:
     username: orbital
     database: orbital

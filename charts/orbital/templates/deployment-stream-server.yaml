@@ -46,7 +46,7 @@ spec:
       {{- end }}
       containers:
       - name: "orbital"
-        image: {{ .Values.streamServer.image.repository }}:{{ .Values.streamServer.image.tag }}
+        image: {{ printf "%s:%s" $.Values.streamServer.image.repository (default $.Chart.AppVersion $.Values.streamServer.image.tag) }}
         imagePullPolicy: {{ .Values.streamServer.image.pullPolicy }}
         {{ if not (empty .Values.streamServer.containerSecurityContext) }}
         securityContext: {{- toYaml .Values.streamServer.containerSecurityContext | nindent 10 }}
