@@ -90,14 +90,15 @@ orbital:
     # nodePort: 32080
     # Set a host port
     # hostPort:
-    # allows to pass through additional service parameters not defined above
     loadBalancerIP: ""
     loadBalancerClass: ""
     loadBalancerSourceRanges: []
     externalTrafficPolicy: "Cluster"
     annotations: {}
+
+    # allows to pass through additional service parameters not defined above
     supplemental:
-      loadBalancerSourceRanges: []
+      externalIPs: []
 
   ingress:
     # Enable/disable exposure using ingress.
@@ -216,7 +217,7 @@ orbital:
     limits:
       memory: 1.5Gi
     requests:
-      cpu: 2
+      cpu: 1.5
       memory: 1.5Gi
 
   # Affinity for pod assignment
@@ -364,7 +365,7 @@ streamServer:
     limits:
       memory: 1.5Gi
     requests:
-      cpu: 2
+      cpu: 1.5
       memory: 1.5Gi
 
   # Affinity for pod assignment

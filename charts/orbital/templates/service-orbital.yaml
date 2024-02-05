@@ -1,5 +1,5 @@
 ---
-{{- $supplemental := omit $.Values.orbital.service.supplemental "type" "ports" "selector" }}
+{{- $supplemental := omit $.Values.orbital.service.supplemental "type" "ports" "selector" "loadBalancerIP" "loadBalancerSourceRanges" "loadBalancerClass" "externalTrafficPolicy" }}
 apiVersion: v1
 kind: Service
 metadata:
