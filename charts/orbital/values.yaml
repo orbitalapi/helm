@@ -28,25 +28,27 @@ orbital:
   project:
     enabled: true
     path: /opt/service/config/taxi.conf
-  workspace:
-    enabled: false
-    path: /opt/service/config/workspaces.conf
-  additionalConfig:
-    taxiConfig: |-
+    config: |-
       name: com.foo/test
       version: 0.1.0
       sourceRoot: src/
       additionalSources: {
           "@orbital/config": "conf/*.conf"
         }
-#    workspacesConfig: |-
-#      git {
-#        pollFrequency=PT20S
-#        repositories=[ {
-#          branch=main
-#          name=orbital-demo
-#          uri=""
-#      } ] }
+  workspace:
+    enabled: false
+    path: /opt/service/config/workspaces.conf
+    config: |-
+      git {
+       # The root directory where all git repositories are cloned to
+       checkoutRoot="/workspace/gitProjects"
+      
+       # How frequently Orbital should poll git repositories for changes
+       pollFrequency=PT20S
+
+       # A collection of Git Repository configurations
+       repositories=[]
+      }
 
   image:
     repository: orbitalhq/orbital
@@ -198,6 +200,13 @@ orbital:
 
   # securityContext for containers.
   containerSecurityContext: {}
+#    capabilities:
+#      drop:
+#        - all
+#    readOnlyRootFilesystem: true
+#    runAsNonRoot: true
+#    runAsUser: 1000
+#    runAsGroup: 1000
 
   # Orbital container lifecycle hooks
   # Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
@@ -339,6 +348,13 @@ streamServer:
 
   # securityContext for stream server container.
   containerSecurityContext: {}
+#    capabilities:
+#      drop:
+#        - all
+#    readOnlyRootFilesystem: true
+#    runAsNonRoot: true
+#    runAsUser: 1000
+#    runAsGroup: 1000
 
   # Orbital stream server container lifecycle hooks
   # Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/

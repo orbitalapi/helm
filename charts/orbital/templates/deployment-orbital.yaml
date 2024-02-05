@@ -103,6 +103,8 @@ spec:
         volumeMounts:
           - name: tmp-dir
             mountPath: /tmp
+          - name: workspace-dir
+            mountPath: /workspace/gitProjects
           - name: orbital-config
             mountPath: /opt/service/config
           - name: orbital-services-config
@@ -149,6 +151,8 @@ spec:
       {{- end }}
       volumes:
         - name: tmp-dir
+          emptyDir: {}
+        - name: workspace-dir
           emptyDir: {}
         - name: orbital-config
           configMap:
