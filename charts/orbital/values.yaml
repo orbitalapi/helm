@@ -202,10 +202,10 @@ orbital:
 
   resources:
     limits:
-      memory: 1Gi
+      memory: 1.5Gi
     requests:
-      cpu: 1
-      memory: 1Gi
+      cpu: 2
+      memory: 1.5Gi
 
   # Affinity for pod assignment
   # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -340,10 +340,10 @@ streamServer:
 
   resources:
     limits:
-      memory: 1Gi
+      memory: 1.5Gi
     requests:
-      cpu: 1
-      memory: 1Gi
+      cpu: 2
+      memory: 1.5Gi
 
   # Affinity for pod assignment
   # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
