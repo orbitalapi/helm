@@ -103,9 +103,18 @@ spec:
       {{- if .Values.streamServer.affinity }}
       affinity: {{- toYaml .Values.streamServer.affinity | nindent 8 }}
       {{- end }}
-      {{- if .Values.streamServer.topologySpreadConstraints }}
-      topologySpreadConstraints: {{- toYaml .Values.streamServer.topologySpreadConstraints | nindent 8 }}
+
+      {{- with $.Values.streamServer.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range $constraint := . }}
+        - {{ toYaml $constraint | nindent 10 | trim }}
+          {{- if not $constraint.labelSelector }}
+          labelSelector:
+            matchLabels: {{- include "streamServer.selectorLabels" $ | nindent 14 }}
+          {{- end }}
+        {{- end }}
       {{- end }}
+
       {{ if not (empty .Values.streamServer.securityContext) }}
       securityContext: {{- toYaml .Values.streamServer.securityContext | nindent 8 }}
       {{- end }}

@@ -124,9 +124,18 @@ spec:
       {{- if .Values.orbital.affinity }}
       affinity: {{- toYaml .Values.orbital.affinity | nindent 8 }}
       {{- end }}
-      {{- if .Values.orbital.topologySpreadConstraints }}
-      topologySpreadConstraints: {{- toYaml .Values.orbital.topologySpreadConstraints | nindent 8 }}
+
+      {{- with $.Values.orbital.topologySpreadConstraints }}
+      topologySpreadConstraints:
+       {{- range $constraint := . }}
+        - {{ toYaml $constraint | nindent 10 | trim }}
+          {{- if not $constraint.labelSelector }}
+          labelSelector:
+            matchLabels: {{- include "orbital.selectorLabels" $ | nindent 14 }}
+          {{- end }}
+       {{- end }}
       {{- end }}
+
       {{ if not (empty .Values.orbital.securityContext) }}
       securityContext: {{- toYaml .Values.orbital.securityContext | nindent 8 }}
       {{- end }}
