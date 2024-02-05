@@ -1,0 +1,12 @@
+{{- if not (empty $.Values.orbital.config) }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "orbital.fullname" . }}-env
+  labels: {{- include "orbital.metaLabels" . | nindent 4 }}
+data:
+  {{- range $key, $value := $.Values.orbital.config }}
+  {{ $key }}: {{ $value | squote }}
+  {{- end }}
+{{- end }}

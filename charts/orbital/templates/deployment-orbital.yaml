@@ -55,7 +55,7 @@ spec:
       priorityClassName: "{{ .Values.orbital.priorityClassName }}"
       {{- end }}
       {{- if .Values.orbital.hostAliases }}
-      hostAliases: {{- toYaml .Values.orbital.hostAliases | nindent 6 }}
+      hostAliases: {{- toYaml .Values.orbital.hostAliases | nindent 8 }}
       {{- end }}
       {{- if .Values.orbital.dnsPolicy }}
       dnsPolicy: {{ .Values.orbital.dnsPolicy | quote }}
@@ -82,19 +82,18 @@ spec:
           {{- toYaml $varValue | nindent 10 }}
           {{- end }}
 
-        {{- if or (not (empty .Values.orbital.config)) (not (empty .Values.orbital.secretConfig)) }}
+        {{- if or (not (empty .Values.orbital.config)) (not (empty .Values.orbital.secretConfig)) (not (empty .Values.orbital.envFrom)) }}
         envFrom:
         {{- if not (empty .Values.orbital.config) }}
           - configMapRef:
-              {{- range .Values.orbital.config }}
-              name: {{ . }}
-              {{- end }}
+              name: {{ template "orbital.fullname" . }}-env
         {{- end }}
         {{- if not (empty .Values.orbital.secretConfig) }}
           - secretRef:
-              {{- range .Values.orbital.secretConfig }}
-              name: {{ . }}
-              {{- end }}
+              name: {{ template "orbital.fullname" . }}-env
+        {{- end }}
+        {{- if not (empty .Values.orbital.envFrom) }}
+          {{- toYaml .Values.orbital.envFrom | nindent 10 }}
         {{- end }}
         {{- end }}
 

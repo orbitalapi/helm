@@ -7,11 +7,14 @@ orbital:
   #set env variables in pod
   env: []
 
-  #mount config map with env vars
-  config: []
+  #allows linking of secrets and config maps created outside of chart
+  envFrom: []
 
-  #mount secret with env vars
-  secretConfig: []
+  #allows creating of config and injecting into envFrom
+  config: {}
+
+  #allows creating of secret and injecting into envFrom
+  secretConfig: {}
 
   security:
     enabled: false
@@ -230,11 +233,14 @@ streamServer:
   #set env variables in pod
   env: []
 
-  #mount config map with env vars
-  config: []
+  #allows linking of secrets and config maps created outside of chart
+  envFrom: []
 
-  #mount secret with env vars
-  secretConfig: []
+  #allows creating of config and injecting into envFrom
+  config: {}
+
+  #allows creating of secret and injecting into envFrom
+  secretConfig: {}
 
   image:
     repository: orbitalhq/stream-server
@@ -370,3 +376,28 @@ postgresql:
     username: orbital
     database: orbital
     password: orbital
+
+
+###############################################################################
+# Extra Objects
+###############################################################################
+
+# Additional Kubernetes objects you would like to deploy alongside Orbital.
+# E.g.
+# extraObjects:
+#   - apiVersion: networking.istio.io/v1beta1
+#     kind: VirtualService
+#     metadata:
+#       name: my-virtual-service
+#     spec:
+#       hosts:
+#         - "*"
+#       gateways:
+#         - istio-system/ingress-gateway
+#       http:
+#         - match:
+#             - uri:
+#                 prefix: /something
+#           rewrite:
+#             uri: "/something-else"
+extraObjects: []

@@ -63,19 +63,18 @@ spec:
             {{- toYaml $varValue | nindent 12 }}
           {{- end }}
 
-        {{- if or (not (empty .Values.streamServer.config)) (not (empty .Values.streamServer.secretConfig)) }}
+        {{- if or (not (empty .Values.streamServer.config)) (not (empty .Values.streamServer.secretConfig)) (not (empty .Values.streamServer.envFrom)) }}
         envFrom:
         {{- if not (empty .Values.streamServer.config) }}
-        - configMapRef:
-            {{- range .Values.streamServer.config }}
-            name: {{ . }}
-            {{- end }}
+          - configMapRef:
+              name: {{ template "orbital.fullname" . }}-env-stream-server
         {{- end }}
         {{- if not (empty .Values.streamServer.secretConfig) }}
-        - secretRef:
-            {{- range .Values.streamServer.secretConfig }}
-            name: {{ . }}
-            {{- end }}
+          - secretRef:
+              name: {{ template "orbital.fullname" . }}-env-stream-server
+        {{- end }}
+        {{- if not (empty .Values.streamServer.envFrom) }}
+          {{- toYaml .Values.streamServer.envFrom | nindent 10 }}
         {{- end }}
         {{- end }}
 
