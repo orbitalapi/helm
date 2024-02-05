@@ -1,6 +1,6 @@
 {{- if .Values.orbital.ingress.enabled }}
 ---
-apiVersion: {{ template "orbital.ingressVersion" }}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "orbital.fullname" . }}
