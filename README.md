@@ -83,6 +83,18 @@ postgresql:
     password: orbital #this is the default so can be removed unless you want to change its value
 ```
 
+## Example installation
+Below is an example installation command, running Orbital on local cluster with local postgreSQL database
+***NOTE:*** The assumption is you need to have added the node labels before this will work
+```shell
+helm upgrade -i orbital orbital/orbital --namespace=orbital \
+--set postgresql.enabled=true \
+--set orbital.secretConfig.VYNE_DB_USERNAME=orbital \
+--set orbital.secretConfig.VYNE_DB_PASSWORD=orbital \
+--set orbital.secretConfig.VYNE_DB_HOST=orbital-postgresql.orbital.svc.cluster.local \
+--create-namespace
+```
+
 ## Port forward the UI
 ```shell
 kubectl port-forward svc/orbital 9022:9022 -n orbital
