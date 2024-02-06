@@ -83,12 +83,6 @@ postgresql:
     password: orbital #this is the default so can be removed unless you want to change its value
 ```
 
-### Change namespace
-If you want to change the namespace on the chart this can be done by overriding the following fields
-```shell
-helm install orbital orbital/orbital --namespace=xxx --set orbital.namespace=xxx
-```
-
 ## Port forward the UI
 ```shell
 kubectl port-forward svc/orbital 9022:9022 -n orbital
