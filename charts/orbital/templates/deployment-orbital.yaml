@@ -28,7 +28,7 @@ spec:
       annotations:
         {{- if .Values.orbital.podAnnotations }}
         {{- range $key, $value := .Values.orbital.podAnnotations }}
-        {{ $key }}: { { $value | quote }}
+        {{ $key }}: {{ $value | quote }}
         {{- end }}
         {{- end }}
       {{- end }}
@@ -112,7 +112,7 @@ spec:
         - name: orbital
           containerPort: {{ .Values.orbital.service.containerPort }}
           {{- if .Values.orbital.service.hostPort }}
-          hostPort: { { .Values.orbital.service.hostPort }}
+          hostPort: {{ .Values.orbital.service.hostPort }}
           {{- end }}
           protocol: TCP
         readinessProbe: {{- toYaml .Values.orbital.readinessProbe | nindent 10 }}

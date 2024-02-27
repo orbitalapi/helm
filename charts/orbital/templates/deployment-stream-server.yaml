@@ -28,7 +28,7 @@ spec:
       annotations:
         {{- if .Values.orbital.podAnnotations }}
         {{- range $key, $value := .Values.orbital.podAnnotations }}
-        {{ $key }}: { { $value | quote }}
+        {{ $key }}: {{ $value | quote }}
         {{- end }}
         {{- end }}
       {{- end }}
