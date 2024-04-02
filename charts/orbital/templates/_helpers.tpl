@@ -130,6 +130,7 @@ OPTIONS:
   value: >-
     --vyne.analytics.persistRemoteCallResponses={{ .Values.orbital.persistRemoteCallResponses }}
     --vyne.services.config-file=/opt/service/config/services/services.conf
+    --vyne.stream-server.enabled={{ .Values.streamServer.enabled }}
     {{- if .Values.orbital.security.enabled }}
     --vyne.security.openIdp.enabled=true
     --vyne.security.openIdp.jwks-uri={{ .Values.orbital.security.jwksUri }}

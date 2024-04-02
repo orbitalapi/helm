@@ -237,6 +237,8 @@ orbital:
   nodeSelector: {}
 
 streamServer:
+  # whether to enable stream server or not, deployment will still deploy
+  enabled: false
   #set env variables in pod
   env: []
 
