@@ -396,6 +396,46 @@ postgresql:
     database: orbital
     password: orbital
 
+prometheus:
+  enabled: false
+  crds:
+    enabled: true
+  prometheusOperator:
+    enabled: true
+  prometheus:
+    enabled: true
+  defaultRules:
+    create: false
+  windowsMonitoring:
+    enabled: false
+  alertmanager:
+    enabled: false
+  grafana:
+    enabled: false
+  kubernetesServiceMonitors:
+    enabled: false
+  kubeApiServer:
+    enabled: false
+  kubelet:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  coreDns:
+    enabled: false
+  kubeDns:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeProxy:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false
+  nodeExporter:
+    enabled: false
+  thanosRuler:
+    enabled: false
 
 ###############################################################################
 # Extra Objects
