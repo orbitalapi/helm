@@ -72,6 +72,10 @@ spec:
           - secretRef:
               name: {{ template "orbital.fullname" . }}-env-stream-server
         {{- end }}
+        {{- if not (empty .Values.orbital.dbSecretConfig) }}
+          - secretRef:
+              name: { { template "orbital.fullname" . } }-db-credentials
+        {{- end }}
         {{- if not (empty .Values.streamServer.envFrom) }}
           {{- toYaml .Values.streamServer.envFrom | nindent 10 }}
         {{- end }}

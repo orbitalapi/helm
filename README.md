@@ -47,8 +47,28 @@ The credentials of the database should be injected into the chart as environment
 by letting the chart create the secret for you and injecting it into the `envFrom` section or using another external tool
 like External Secrets or CSI drivers to create the secret outside the chart and inject them in too
 
-#### Secret / ConfigMap created by the chart
-To use this feature you should set the following parts of the values file. Both `config` and `secretConfig` are maps. The 
+#### Database credentials via a secret created by the chart
+The chart has the ability to create a secret for you to store the database credentials.
+The database credentials are needed for both the orbital and stream server services and so there is a new
+property that allows you to set it once, create 1 secret for the credentials and have both services
+use the same set of credentials. This secret will be injected into the `envFrom` section of both deployments.
+
+```yaml
+orbital:
+  dbSecretConfig:
+    VYNE_DB_USERNAME: orbital
+    VYNE_DB_PASSWORD: changeme
+```
+
+You can then pass these in via your CI/CD pipeline when you are deploying the helm chart
+```shell
+helm upgrade -i orbital orbital/orbital --namespace=orbital \
+--set orbital.dbSecretConfig.VYNE_DB_USERNAME=orbital \
+--set orbital.dbSecretConfig.VYNE_DB_PASSWORD=changeme
+```
+
+#### Additional Secret / ConfigMap created by the chart
+The chart also allows you to create an additional secret or config map with env vars. Both `config` and `secretConfig` are maps. The 
 values defined here will be injected into a secret / config map created by the chart and injected into the `envFrom` part
 of the deployment
 
@@ -59,17 +79,18 @@ orbital:
     KEY2: VALUE2
 
   secretConfig:
-    VYNE_DB_USERNAME: orbital
-    VYNE_DB_PASSWORD: changeme
+    VYNE_ANALYTICS_PERSISTRESULTS: true
+    VYNE_ANALYTICS_PERSISTREMOTECALLRESPONSES: true
 ```
 
-Instead of having these values committed into a git repository instead you can inject them into your helm
+Instead of having these values committed into a git repository you can inject them into your helm
 command, and pull them out of a secret store as part of your CI/CD platform
 ```shell
 helm upgrade -i orbital orbital/orbital --namespace=orbital \
---set orbital.secretConfig.VYNE_DB_USERNAME=orbital \
---set orbital.secretConfig.VYNE_DB_PASSWORD=changeme
+--set orbital.secretConfig.VYNE_ANALYTICS_PERSISTRESULTS=true \
+--set orbital.secretConfig.VYNE_ANALYTICS_PERSISTREMOTECALLRESPONSES=true
 ```
+
 #### Enabling the sub chart to install local DB
 Add the following YAML to your overrides file to enable the sub chart and configure it as needed. It uses the [Bitnami postgreSQL chart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql)
 and so all configurations for that chart are supported
@@ -89,9 +110,9 @@ Below is an example installation command, running Orbital on local cluster with 
 ```shell
 helm upgrade -i orbital orbital/orbital --namespace=orbital \
 --set postgresql.enabled=true \
---set orbital.secretConfig.VYNE_DB_USERNAME=orbital \
---set orbital.secretConfig.VYNE_DB_PASSWORD=orbital \
---set orbital.secretConfig.VYNE_DB_HOST=orbital-postgresql.orbital.svc.cluster.local \
+--set orbital.dbSecretConfig.VYNE_DB_USERNAME=orbital \
+--set orbital.dbSecretConfig.VYNE_DB_PASSWORD=orbital \
+--set orbital.dbSecretConfig.VYNE_DB_HOST=orbital-postgresql.orbital.svc.cluster.local \
 --create-namespace
 ```
 

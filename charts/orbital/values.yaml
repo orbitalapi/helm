@@ -13,6 +13,9 @@ orbital:
   #allows creating of secret and injecting into envFrom
   secretConfig: {}
 
+  #creates a secret for storing the DB credentials and injects into both this and stream server envFrom
+  dbSecretConfig: {}
+
   security:
     enabled: false
     jwksUri: ""
