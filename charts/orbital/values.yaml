@@ -396,8 +396,12 @@ postgresql:
     database: orbital
     password: orbital
 
+#enable prometheus install
 prometheus:
   enabled: false
+
+# prometheus operator sub chart configurations
+kube-prometheus-stack:
   crds:
     enabled: true
   prometheusOperator:

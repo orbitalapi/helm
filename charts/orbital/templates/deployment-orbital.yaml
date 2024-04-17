@@ -81,7 +81,7 @@ spec:
           {{- toYaml $varValue | nindent 10 }}
           {{- end }}
 
-        {{- if or (not (empty .Values.orbital.config)) (not (empty .Values.orbital.secretConfig)) (not (empty .Values.orbital.envFrom)) }}
+        {{- if or (not (empty .Values.orbital.config)) (not (empty .Values.orbital.secretConfig)) (not (empty .Values.orbital.envFrom)) (not (empty .Values.orbital.dbSecretConfig)) }}
         envFrom:
         {{- if not (empty .Values.orbital.config) }}
           - configMapRef:
@@ -93,7 +93,7 @@ spec:
         {{- end }}
         {{- if not (empty .Values.orbital.dbSecretConfig) }}
           - secretRef:
-              name: { { template "orbital.fullname" . } }-db-credentials
+              name: {{ template "orbital.fullname" . }}-db-credentials
         {{- end }}
         {{- if not (empty .Values.orbital.envFrom) }}
           {{- toYaml .Values.orbital.envFrom | nindent 10 }}

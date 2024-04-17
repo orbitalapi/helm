@@ -5,9 +5,8 @@ metadata:
 data:
   services.conf: |-
     services {
-      analytics-server {
-          rsocket="tcp://vyne-analytics-server:7654"
-          url="http://orbital-query-analytics"
+      orbital-prometheus {
+        url="http://{{ .Release.Name }}-kube-prometheus-st-prometheus.{{ .Release.Namespace }}.svc.cluster.local:9090"
       }
       orbital-server {
           rsocket="tcp://orbital.{{ .Release.Namespace }}.svc.cluster.local:7655"
