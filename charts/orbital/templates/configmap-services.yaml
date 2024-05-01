@@ -6,13 +6,18 @@ data:
   services.conf: |-
     services {
       orbital-prometheus {
+        {{- if not (empty .Values.prometheus.serviceUrl) }}
+        url="{{- .Values.prometheus.serviceUrl }}"
+        {{- else }}
         url="http://{{ .Release.Name }}-kube-prometheus-st-prometheus.{{ .Release.Namespace }}.svc.cluster.local:9090"
+        {{- end }}
       }
       orbital-server {
           rsocket="tcp://orbital.{{ .Release.Namespace }}.svc.cluster.local:7655"
-          url="http://orbital.{{ .Release.Namespace }}.svc.cluster.local:9022"
+          url="http://orbital.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.orbital.service.servicePort }}"
       }
       stream-server {
-          url="http://orbital-stream-server"
+          url="http://{{ template "orbital.fullname" . }}-stream-server.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.streamServer.service.servicePort }}"
+          rsocket="tcp://{{ template "orbital.fullname" . }}-stream-server.{{ .Release.Namespace }}.svc.cluster.local:7755"
       }
     }

@@ -400,6 +400,10 @@ postgresql:
 prometheus:
   enabled: false
 
+  #Set the URL for prometheus if it's in another namespace/cluster/deployment
+  #if left blank and prometheus enabled above will use default name for prometheus
+  serviceUrl: ""
+
 # prometheus operator sub chart configurations
 kube-prometheus-stack:
   crds:
