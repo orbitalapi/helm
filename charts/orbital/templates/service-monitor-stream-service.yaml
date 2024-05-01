@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels: {{- include "streamServer.selectorLabels" . | nindent 6 }}
   endpoints:
-  - port: 'stream-server'
+  - port: 'orbital-stream-server'
     path: /api/actuator/prometheus
     interval: 60s
     scheme: http

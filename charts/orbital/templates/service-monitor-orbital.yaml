@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels: {{- include "orbital.selectorLabels" . | nindent 6 }}
   endpoints:
-  - port: 'orbital'
+  - port: 'orbital-svc'
     path: /api/actuator/prometheus
     interval: 60s
     scheme: http
