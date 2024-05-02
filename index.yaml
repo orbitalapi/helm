@@ -3,6 +3,28 @@ entries:
   orbital:
   - apiVersion: v2
     appVersion: 0.31.0
+    created: "2024-05-02T11:25:32.358569447Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.2.2
+    - condition: prometheus.enabled
+      name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 57.2.0
+    description: A Helm chart for Orbital
+    digest: 98775bbceefc5cadface520f983945a2d6dd12f2c5bd63cb48fb22933100b5c5
+    maintainers:
+    - email: andrew@quadcorps.co.uk
+      name: andrewgkew
+    name: orbital
+    type: application
+    urls:
+    - https://github.com/orbitalapi/helm/releases/download/orbital-0.10.1/orbital-0.10.1.tgz
+    version: 0.10.1
+  - apiVersion: v2
+    appVersion: 0.31.0
     created: "2024-05-02T10:49:46.750234684Z"
     dependencies:
     - condition: postgresql.enabled
@@ -257,4 +279,4 @@ entries:
     urls:
     - https://github.com/orbitalapi/helm/releases/download/orbital-0.3.0/orbital-0.3.0.tgz
     version: 0.3.0
-generated: "2024-05-02T10:49:46.750330041Z"
+generated: "2024-05-02T11:25:32.358669475Z"
