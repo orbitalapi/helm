@@ -69,8 +69,6 @@ orbital:
   #      maxSurge: "100%"
   #      maxUnavailable: "0%"
   #deploymentMinReadySeconds: 60
-  serviceMonitor:
-    enabled: false
 
   serviceAccount:
     create: true
@@ -266,9 +264,6 @@ streamServer:
     # pullSecrets:
     #   - myRegistrKeySecretName
 
-  serviceMonitor:
-    enabled: false
-
   deploymentAnnotations: {}
   updateStrategy: {}
 #    type: RollingUpdate
@@ -403,6 +398,10 @@ prometheus:
   #Set the URL for prometheus if it's in another namespace/cluster/deployment
   #if left blank and prometheus enabled above will use default name for prometheus
   serviceUrl: ""
+
+#this parameter enables the service monitor resources for both orbital and stream server
+serviceMonitor:
+  enabled: false
 
 # prometheus operator sub chart configurations
 kube-prometheus-stack:
