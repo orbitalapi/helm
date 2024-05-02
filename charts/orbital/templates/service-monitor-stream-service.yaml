@@ -4,6 +4,8 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "orbital.fullname" . }}-stream-server-service-monitor
+  labels:
+    release: {{ $.Release.Name | quote }}
 spec:
   selector:
     matchLabels: {{- include "streamServer.selectorLabels" . | nindent 6 }}
