@@ -149,7 +149,7 @@ versions running at the same time.
 By default, the version that is deployed is the version defined in the Chart itself, but you can
 change this to a version you are after as well
 ```yaml
-version: 0.31.0
+version: "0.31.0"
 ```
 
 ## Example installation
