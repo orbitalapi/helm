@@ -5,6 +5,7 @@ metadata:
 data:
   services.conf: |-
     services {
+      {{- if or (not (empty .Values.prometheus.serviceUrl)) .Values.prometheus.enabled }}
       orbital-prometheus {
         {{- if not (empty .Values.prometheus.serviceUrl) }}
         url="{{- .Values.prometheus.serviceUrl }}"
@@ -12,6 +13,7 @@ data:
         url="http://{{ .Release.Name }}-kube-prometheus-st-prometheus.{{ .Release.Namespace }}.svc.cluster.local:9090"
         {{- end }}
       }
+      {{- end }}
       orbital-server {
           rsocket="tcp://orbital.{{ .Release.Namespace }}.svc.cluster.local:7655"
           url="http://orbital.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.orbital.service.servicePort }}"
