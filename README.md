@@ -104,6 +104,54 @@ postgresql:
     password: orbital #this is the default so can be removed unless you want to change its value
 ```
 
+## Observability
+Orbital comes out of the box with metric endpoints that can be scraped by prometheus. This can be easily enabled by enabling the service monitor resources in the chart
+```yaml
+serviceMonitor:
+  enabled: true
+```
+This has a dependency on the CRD for `serviceMonitor` being installed on your cluster though
+### Prometheus sub-chart
+To help get you going quickly this chart has the `kube-prometheus-stack` prometheus operator helm 
+chart as a sub chart so that you can quickly and easily get things going, this is easily enabled by setting
+the following parameter in your values file
+```yaml
+prometheus:
+  enabled: true
+```
+This field will install the sub chart BUT only the prometheus operator and the prometheus DB services
+The rest of the chart has been disabled but you can enable whatever you want very easily in the `kube-prometheus-stack`
+section of the chart
+```yaml
+kube-prometheus-stack:
+  grafana:
+    enabled: true
+  nodeExporter:
+    enabled: true
+```
+
+### Using an already installed prometheus release
+If you already have prometheus/prometheus operator installed on your cluster and just want
+to point Orbital toward the TSDB then you can do so with the following field
+```yaml
+prometheus:
+  enabled: false
+  serviceUrl: "http://<prometheus-service>.<namespace>.svc.cluster.local:9090"
+```
+You can also use this `serviceUrl` field to change the endpoint URL if you are installing the
+sub chart, the options are up to your deployment requirements
+
+## Orbital version
+There is a parameter in the chart that allows you to set the version i.e. image tag for
+both orbital and also stream server all in one go. There is never a reason to have 2 different
+versions running at the same time.
+
+By default, the version that is deployed is the version defined in the Chart itself, but you can
+change this to a version you are after as well
+```yaml
+version: 0.31.0
+```
+
 ## Example installation
 Below is an example installation command, running Orbital on local cluster with local postgreSQL database
 ***NOTE:*** The assumption is you need to have added the node labels before this will work
@@ -113,6 +161,9 @@ helm upgrade -i orbital orbital/orbital --namespace=orbital \
 --set orbital.dbSecretConfig.VYNE_DB_USERNAME=orbital \
 --set orbital.dbSecretConfig.VYNE_DB_PASSWORD=orbital \
 --set orbital.dbSecretConfig.VYNE_DB_HOST=orbital-postgresql.orbital.svc.cluster.local \
+--set streamServer.enabled=true \
+--set prometheus.enabled=true \
+--set serviceMonitor.enabled=true \
 --create-namespace
 ```
 
