@@ -64,7 +64,7 @@ spec:
       {{- end }}
       containers:
       - name: "orbital"
-        image: {{ printf "%s:%s" $.Values.orbital.image.repository (default $.Chart.AppVersion $.Values.orbital.image.tag) }}
+        image: {{ printf "%s:%s" $.Values.orbital.image.repository (default (default $.Chart.AppVersion $.Values.version) $.Values.orbital.image.tag) }}
         imagePullPolicy: {{ .Values.orbital.image.pullPolicy }}
         {{- if not (empty .Values.orbital.containerSecurityContext) }}
         securityContext: {{- toYaml .Values.orbital.containerSecurityContext | nindent 10 }}

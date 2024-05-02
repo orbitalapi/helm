@@ -1,5 +1,9 @@
 fullnameOverride: ""
 
+# set the version of Orbital to deploy (orbital + stream server)
+# Defaults to the chart appVersion
+version: ""
+
 orbital:
   #set env variables in pod
   env: []
