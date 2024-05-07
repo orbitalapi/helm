@@ -5,7 +5,7 @@ maintainers:
   - name: andrewgkew
     email: andrew@quadcorps.co.uk
 type: application
-version: 0.10.2
+version: 0.10.3
 appVersion: "0.31.0"
 dependencies:
   - name: postgresql
