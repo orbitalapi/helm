@@ -471,3 +471,11 @@ kube-prometheus-stack:
 #           rewrite:
 #             uri: "/something-else"
 extraObjects: []
+
+## Define any volumes and mounts you want present in the Kong proxy container
+# userDefinedVolumes:
+# - name: "volumeName"
+#   emptyDir: {}
+# userDefinedVolumeMounts:
+# - name: "volumeName"
+#   mountPath: "/opt/user/dir/mount"

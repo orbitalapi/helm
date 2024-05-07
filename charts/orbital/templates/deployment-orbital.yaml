@@ -112,6 +112,9 @@ spec:
             mountPath: /opt/service/config
           - name: orbital-services-config
             mountPath: /opt/service/config/services
+        {{- if .Values.userDefinedVolumeMounts }}
+        {{- toYaml .Values.userDefinedVolumeMounts | nindent 10 }}
+        {{- end }}
         ports:
         - name: orbital
           containerPort: {{ .Values.orbital.service.containerPort }}
@@ -163,3 +166,6 @@ spec:
         - name: orbital-services-config
           configMap:
             name: {{ template "orbital.fullname" . }}-services-config
+      {{- if .Values.userDefinedVolumes }}
+        {{- toYaml .Values.userDefinedVolumes | nindent 8 }}
+      {{- end }}
