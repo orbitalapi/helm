@@ -1,10 +1,12 @@
 fullnameOverride: ""
 
-# set the version of Orbital to deploy (orbital + stream server)
+# set the version of Orbital to deploy (orbital)
 # Defaults to the chart appVersion
 version: ""
 
 orbital:
+  streamServer:
+    enabled: false
   #set env variables in pod
   env: []
 
@@ -17,16 +19,33 @@ orbital:
   #allows creating of secret and injecting into envFrom
   secretConfig: {}
 
-  #creates a secret for storing the DB credentials and injects into both this and stream server envFrom
+  #creates a secret for storing the DB credentials and injects into envFrom
   dbSecretConfig: {}
 
   security:
     enabled: false
-    jwksUri: ""
-    issuerUrl: ""
+
     clientId: ""
+    # This url is called by Orbital’s server, so ensure that the DNS entry is accessible to Orbital
+    jwksUri: ""
+    #normally only 1 of issuerUrl and oidcDiscoveryUrl needs to be set not both
+    issuerUrl: ""
+    #if this is not set will default to ${issuerUrl}/.well-known/openid-configuration
+    oidcDiscoveryUrl: ""
+
     scope: "openid"
     requireHttps: true
+
+    # Optional
+    accountManagementUrl: ""
+    # Optional
+    orgManagementUrl: ""
+    # Optional
+    identityTokenKind: "" #Values are Access or Id
+    # Optional - only needed for Azure AD with value of path
+    rolesFormat: ""
+    # Optional - only needed for Azure AD with value of roles
+    rolesPath: ""
 
   persistRemoteCallResponses: true
   project:
@@ -241,153 +260,6 @@ orbital:
   # Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
 
-streamServer:
-  # whether to enable stream server or not, deployment will still deploy
-  enabled: false
-  #set env variables in pod
-  env: []
-
-  #allows linking of secrets and config maps created outside of chart
-  envFrom: []
-
-  #allows creating of config and injecting into envFrom
-  config: {}
-
-  #allows creating of secret and injecting into envFrom
-  secretConfig: {}
-
-  image:
-    repository: orbitalhq/stream-server
-    # Defaults to the chart appVersion
-    tag: ""
-    pullPolicy: IfNotPresent
-    ## Optionally specify an array of imagePullSecrets.
-    ## Secrets must be manually created in the namespace.
-    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-    ##
-    # pullSecrets:
-    #   - myRegistrKeySecretName
-
-  deploymentAnnotations: {}
-  updateStrategy: {}
-#    type: RollingUpdate
-#    rollingUpdate:
-#      maxSurge: "100%"
-#      maxUnavailable: "0%"
-  #deploymentMinReadySeconds: 60
-  service:
-    enabled: true
-    type: ClusterIP
-    servicePort: 9615
-    containerPort: 9615
-    # Set a nodePort which is available if service type is NodePort
-    # nodePort: 32080
-    # Set a host port
-    # hostPort:
-
-  podLabels: {}
-  podAnnotations: {}
-  replicaCount: 1
-  terminationGracePeriodSeconds: 30
-  # Enable autoscaling using HorizontalPodAutoscaler
-  # When configuring an HPA, you must set resource requests on all containers via
-  # "resources" if this is enabled, replica count above is ignored
-  autoscaling:
-    enabled: false
-    minReplicas: 2
-    maxReplicas: 5
-    behavior: {}
-    ## targetCPUUtilizationPercentage only used if the cluster doesn't support autoscaling/v2 or autoscaling/v2beta
-    targetCPUUtilizationPercentage:
-    ## Otherwise for clusters that do support autoscaling/v2 or autoscaling/v2beta, use metrics
-    metrics:
-      - type: Resource
-        resource:
-          name: cpu
-          target:
-            type: Utilization
-            averageUtilization: 80
-
-  podDisruptionBudget:
-    enabled: false
-    # Uncomment only one of the following when enabled is set to true
-    # maxUnavailable: "50%"
-    # minAvailable: "50%"
-
-  readinessProbe:
-    httpGet:
-      path: "/api/actuator/health"
-      port: 9615
-      scheme: HTTP
-    initialDelaySeconds: 5
-    timeoutSeconds: 5
-    periodSeconds: 10
-    successThreshold: 1
-    failureThreshold: 3
-  livenessProbe:
-    httpGet:
-      path: "/api/actuator/health"
-      port: 9615
-      scheme: HTTP
-    initialDelaySeconds: 5
-    timeoutSeconds: 5
-    periodSeconds: 10
-    successThreshold: 1
-    failureThreshold: 3
-  startupProbe:
-    httpGet:
-      path: "/api/actuator/health"
-      port: 9615
-      scheme: HTTP
-    initialDelaySeconds: 1
-    timeoutSeconds: 3
-    periodSeconds: 5
-    successThreshold: 1
-    failureThreshold: 12
-
-  # securityContext for stream server pods.
-  securityContext: {}
-
-  # securityContext for stream server container.
-  containerSecurityContext: {}
-#    capabilities:
-#      drop:
-#        - all
-#    readOnlyRootFilesystem: true
-#    runAsNonRoot: true
-#    runAsUser: 1000
-#    runAsGroup: 1000
-
-  # Orbital stream server container lifecycle hooks
-  # Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
-  lifecycle: {}
-
-  resources:
-    limits:
-      memory: 1.5Gi
-    requests:
-      cpu: 1.5
-      memory: 1.5Gi
-
-  # Affinity for pod assignment
-  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  affinity: {}
-
-  # Topology spread constraints for pod assignment (requires Kubernetes >= 1.19)
-  # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
-  topologySpreadConstraints:
-    - maxSkew: 1
-      topologyKey: topology.kubernetes.io/zone
-      whenUnsatisfiable: DoNotSchedule
-
-  # Tolerations for pod assignment
-  # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  tolerations: [ ]
-
-  # Node labels for pod assignment
-  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
-  nodeSelector: { }
-
 postgresql:
   enabled: false
   auth:
@@ -403,7 +275,7 @@ prometheus:
   #if left blank and prometheus enabled above will use default name for prometheus
   serviceUrl: ""
 
-#this parameter enables the service monitor resources for both orbital and stream server
+#this parameter enables the service monitor resources for orbital
 serviceMonitor:
   enabled: false
 

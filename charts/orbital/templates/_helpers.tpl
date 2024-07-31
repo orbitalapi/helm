@@ -42,25 +42,11 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
-{{- define "streamServer.labels" -}}
-helm.sh/chart: {{ include "orbital.chart" . }}
-{{ include "streamServer.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
 {{/*
 Selector labels
 */}}
 {{- define "orbital.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "orbital.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{- define "streamServer.selectorLabels" -}}
-app.kubernetes.io/name: stream-server
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
@@ -71,17 +57,6 @@ app.kubernetes.io/instance: "{{ .Release.Name }}"
 app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- range $key, $value := .Values.orbital.extraLabels }}
-{{ $key }}: {{ $value | quote }}
-{{- end }}
-{{- end -}}
-
-{{- define "streamServer.metaLabels" -}}
-app.kubernetes.io/name: stream-server
-helm.sh/chart: {{ template "orbital.chart" . }}
-app.kubernetes.io/instance: "{{ .Release.Name }}"
-app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- range $key, $value := .Values.streamServer.extraLabels }}
 {{ $key }}: {{ $value | quote }}
 {{- end }}
 {{- end -}}
@@ -126,17 +101,53 @@ autoscaling/v1
 Default environment variable configuration for orbital containers
 */}}
 {{- define "orbital.defaultEnv" -}}
+{{- if .Values.orbital.security.enabled }}
+{{- if .Values.orbital.security.jwksUri }}
+VYNE_SECURITY_OPENIDP_JWKSURI:
+  value: {{ .Values.orbital.security.jwksUri }}
+{{- end }}
+{{- if .Values.orbital.security.issuerUrl }}
+VYNE_SECURITY_OPENIDP_ISSUERURL:
+  value: {{ .Values.orbital.security.issuerUrl }}
+{{- end }}
+{{- if .Values.orbital.security.clientId }}
+VYNE_SECURITY_OPENIDP_CLIENTID:
+  value: {{ .Values.orbital.security.clientId }}
+{{- end }}
+VYNE_SECURITY_OPENIDP_SCOPE:
+  value: {{ .Values.orbital.security.scope }}
+{{- if .Values.orbital.security.accountManagementUrl }}
+VYNE_SECURITY_OPENIDP_ACCOUNTMANAGEMENTURL:
+  value: {{ .Values.orbital.security.accountManagementUrl }}
+{{- end }}
+{{- if .Values.orbital.security.orgManagementUrl }}
+VYNE_SECURITY_OPENIDP_ORGMANAGEMENTURL:
+  value: {{ .Values.orbital.security.orgManagementUrl }}
+{{- end }}
+{{- if .Values.orbital.security.identityTokenKind }}
+VYNE_SECURITY_OPENIDP_IDENTITYTOKENKIND:
+  value: {{ .Values.orbital.security.identityTokenKind }}
+{{- end }}
+{{- if .Values.orbital.security.oidcDiscoveryUrl }}
+VYNE_SECURITY_OPENIDP_OIDCDISCOVERYURL:
+  value: {{ .Values.orbital.security.oidcDiscoveryUrl }}
+{{- end }}
+{{- if .Values.orbital.security.rolesFormat }}
+VYNE_SECURITY_OPENIDP_ROLES_FORMAT:
+  value: {{ .Values.orbital.security.rolesFormat }}
+{{- end }}
+{{- if .Values.orbital.security.rolesPath }}
+VYNE_SECURITY_OPENIDP_ROLES_PATH:
+  value: {{ .Values.orbital.security.rolesPath }}
+{{- end }}
+{{- end }}
 OPTIONS:
   value: >-
     --vyne.analytics.persistRemoteCallResponses={{ .Values.orbital.persistRemoteCallResponses }}
     --vyne.services.config-file=/opt/service/config/services/services.conf
-    --vyne.stream-server.enabled={{ .Values.streamServer.enabled }}
+    --vyne.stream-server.enabled={{ .Values.orbital.streamServer.enabled }}
     {{- if .Values.orbital.security.enabled }}
     --vyne.security.openIdp.enabled=true
-    --vyne.security.openIdp.jwks-uri={{ .Values.orbital.security.jwksUri }}
-    --vyne.security.openIdp.issuerUrl={{ .Values.orbital.security.issuerUrl }}
-    --vyne.security.openIdp.clientId={{ .Values.orbital.security.clientId }}
-    --vyne.security.openIdp.scope={{ .Values.orbital.security.scope }}
     --vyne.security.openIdp.require-https={{ .Values.orbital.security.requireHttps }}
     {{- end }}
     {{- if .Values.orbital.project.enabled }}
@@ -144,16 +155,6 @@ OPTIONS:
     {{- else }}
     --vyne.workspace.config-file={{ .Values.orbital.workspace.path }}
     {{- end }}
-JAVA_OPTS:
-  value: >-
-    -XX:MaxRAMPercentage=75
-    -XX:MinRAMPercentage=75
-{{- end }}
-
-{{- define "streamserver.defaultEnv" -}}
-OPTIONS:
-  value: >-
-    --vyne.services.config-file=/opt/service/config/services/services.conf
 JAVA_OPTS:
   value: >-
     -XX:MaxRAMPercentage=75
