@@ -49,9 +49,7 @@ like External Secrets or CSI drivers to create the secret outside the chart and 
 
 #### Database credentials via a secret created by the chart
 The chart has the ability to create a secret for you to store the database credentials.
-The database credentials are needed for both the orbital and stream server services and so there is a new
-property that allows you to set it once, create 1 secret for the credentials and have both services
-use the same set of credentials. This secret will be injected into the `envFrom` section of both deployments.
+This secret will be injected into the `envFrom` section of both deployments.
 
 ```yaml
 orbital:
@@ -142,9 +140,7 @@ You can also use this `serviceUrl` field to change the endpoint URL if you are i
 sub chart, the options are up to your deployment requirements
 
 ## Orbital version
-There is a parameter in the chart that allows you to set the version i.e. image tag for
-both orbital and also stream server all in one go. There is never a reason to have 2 different
-versions running at the same time.
+There is a parameter in the chart that allows you to set the version i.e. image tag
 
 By default, the version that is deployed is the version defined in the Chart itself, but you can
 change this to a version you are after as well
@@ -161,10 +157,93 @@ helm upgrade -i orbital orbital/orbital --namespace=orbital \
 --set orbital.dbSecretConfig.VYNE_DB_USERNAME=orbital \
 --set orbital.dbSecretConfig.VYNE_DB_PASSWORD=orbital \
 --set orbital.dbSecretConfig.VYNE_DB_HOST=orbital-postgresql.orbital.svc.cluster.local \
---set streamServer.enabled=true \
+--set orbital.streamServer.enabled=true \
 --set prometheus.enabled=true \
 --set serviceMonitor.enabled=true \
 --create-namespace
+```
+
+# OIDC Integration
+Out of the box, Orbital comes with OIDC Integration. Once enabled accessing Orbital will need a valid token
+whether this is via the UI or a HTTP endpoint. The UI uses `Authorization Code Flow with Proof Key for Code Exchange (PKCE)`
+for obtaining a token.
+
+## Example configurations
+Below are some configurations for 2 widely used IDPs (it does support others): https://orbitalhq.com/docs/deploying/authentication
+
+### Keycloak
+#### Configuring Keycloak
+1. Login to Keycloak as admin user
+2. Create new realm called `orbital`
+3. Create new client with client Id = `orbital` and set redirect URL to Orbital UI URL, leave all other settings as default
+4. Because we are using `Authorization Code Flow with Proof Key for Code Exchange (PKCE)` no client authentication is needed and no client secret either
+5. Create 4 Realm Roles: `Admin`, `Viewer`, `QueryRunner`, `PlatformManager`
+6. Create a user and set their credentials, navigate to role mappings and assign one of the above roles to the user
+#### Installing Orbital
+Here is an installation command that can be used to install `Orbital` with `Keycloak` integration with a realm called
+`orbital` and keycloak running on the same cluster as Orbital.
+```shell
+helm upgrade -i orbital orbital/orbital --namespace=orbital \
+--set postgresql.enabled=true \
+--set orbital.dbSecretConfig.VYNE_DB_USERNAME=orbital \
+--set orbital.dbSecretConfig.VYNE_DB_PASSWORD=orbital \
+--set orbital.dbSecretConfig.VYNE_DB_HOST=orbital-postgresql.orbital.svc.cluster.local \
+--set orbital.streamServer.enabled=true \
+--set prometheus.enabled=true \
+--set serviceMonitor.enabled=true \
+--set orbital.security.enabled=true \
+--set orbital.security.issuerUrl=http://<keycloak-hostname>/realms/orbital \
+--set orbital.security.clientId=orbital \
+--set orbital.security.jwksUri=http://keycloak.<namespace>.svc.cluster.local/realms/orbital/protocol/openid-connect/certs \
+--set orbital.security.requireHttps=false \
+--create-namespace
+```
+
+### Azure AD
+#### Creating the Registered App
+1. Login to Azure as an admin
+2. Navigate to App Registrations
+3. Click New Registration
+4. Set Name = `Orbital` (or whatever you wish)
+5. Under Redirect URI set platform to `Single-page Application (SPA)` and URI to that of Orbital UI
+6. Once created Navigate to Authentication
+7. Under the section "Implicit grant and hybrid flow" check the 2 check boxes for `Access tokens` and `ID tokens`
+8. Under App Roles create 4 roles of type `Both (User/Group)`; `Admin`, `Viewer`, `QueryRunner`, `PlatformManager`
+9. Navigate to Manifest and select the AAD Graph App Manifest and set `accessTokenAcceptedVersion` = 2
+10. Lastly navigate to Enterprise Apps for the same application (Overview > Managed application in local directory) and assign 
+any users you wish to one of the app roles created in 8.
+11. Lastly on the overview page get the client id and tenant id for the configuration below
+#### Installing Orbital
+Here is an installation command that can be used to install `Orbital` with `Azure AD` integration with a Single Page Application
+registered application.
+```shell
+helm template orbital orbital/orbital --namespace=orbital \
+--set postgresql.enabled=true \
+--set orbital.dbSecretConfig.VYNE_DB_USERNAME=orbital \
+--set orbital.dbSecretConfig.VYNE_DB_PASSWORD=orbital \
+--set orbital.dbSecretConfig.VYNE_DB_HOST=orbital-postgresql.orbital.svc.cluster.local \
+--set orbital.streamServer.enabled=true \
+--set prometheus.enabled=true \
+--set serviceMonitor.enabled=true \
+--set orbital.security.enabled=true \
+--set orbital.security.issuerUrl=https://login.microsoftonline.com/<TENANT-ID>/v2.0 \
+--set orbital.security.clientId=<CLIENT/APP-ID> \
+--set orbital.security.identityTokenKind=Id \
+--set orbital.security.scope="openid email profile <CLIENT/APP-ID>/.default" \
+--set orbital.security.rolesFormat=path \
+--set orbital.security.rolesPath=roles \
+--set orbital.security.requireHttps=false \
+--set orbital.project.enabled=false \
+--create-namespace
+```
+
+# Running Orbital on Mac Silicon
+There seems to be a known issue with OpenJDK running on Mac Silicon at moment which causes a JVM Panic
+so until that is resolved there is an ubuntu image that we recommend you using `*-jammy`
+
+This can be set using the `version` field in the chart
+```shell
+--set version=<orbital-version>-jammy
 ```
 
 ## Port forward the UI
