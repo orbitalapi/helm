@@ -112,6 +112,8 @@ spec:
             mountPath: /opt/service/config
           - name: orbital-services-config
             mountPath: /opt/service/config/services
+          - name: orbital-workspace-config
+            mountPath: /opt/service/config/workspace
         {{- if .Values.userDefinedVolumeMounts }}
         {{- toYaml .Values.userDefinedVolumeMounts | nindent 10 }}
         {{- end }}
@@ -163,6 +165,13 @@ spec:
         - name: orbital-config
           configMap:
             name: {{ template "orbital.fullname" . }}-config
+        - name: orbital-workspace-config
+          configMap:
+        {{- if .Values.orbital.workspace.configSuppliedAsConfigMap }}
+            name: {{ .Values.orbital.workspace.configMap }}
+        {{- else }}
+            name: {{ template "orbital.fullname" . }}-workspace-config
+        {{- end }}
         - name: orbital-services-config
           configMap:
             name: {{ template "orbital.fullname" . }}-services-config

@@ -3,10 +3,6 @@ kind: ConfigMap
 metadata:
   name: {{ template "orbital.fullname" . }}-config
 data:
-  {{- if and (.Values.orbital.workspace.enabled) (not (empty .Values.orbital.workspace.config)) }}
-  workspaces.conf: |
-    {{ .Values.orbital.workspace.config | nindent 4 }}
-  {{- end}}
   {{- if .Values.orbital.project.enabled }}
   taxi.conf: |
     {{ .Values.orbital.project.config | nindent 4 }}

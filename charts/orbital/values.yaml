@@ -60,7 +60,9 @@ orbital:
         }
   workspace:
     enabled: false
-    path: /opt/service/config/workspaces.conf
+    path: /opt/service/config/workspace/workspaces.conf
+    configSuppliedAsConfigMap: false
+    configMap: "" #right now only 1 config map is allowed for workspace config
     config: |-
       git {
        # The root directory where all git repositories are cloned to

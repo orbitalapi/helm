@@ -1,0 +1,9 @@
+{{- if and (and (.Values.orbital.workspace.enabled) (not (empty .Values.orbital.workspace.config))) ( not (.Values.orbital.workspace.configSuppliedAsConfigMap)) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "orbital.fullname" . }}-workspace-config
+data:
+  workspaces.conf: |
+    {{ .Values.orbital.workspace.config | nindent 4 }}
+{{- end}}
