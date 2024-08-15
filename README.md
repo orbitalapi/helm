@@ -196,6 +196,8 @@ helm upgrade -i orbital orbital/orbital --namespace=orbital \
 --set orbital.security.clientId=orbital \
 --set orbital.security.jwksUri=http://keycloak.<namespace>.svc.cluster.local/realms/orbital/protocol/openid-connect/certs \
 --set orbital.security.requireHttps=false \
+--set orbital.project.enabled=false \
+--set orbital.workspace.enabled=true \
 --create-namespace
 ```
 
@@ -234,6 +236,7 @@ helm upgrade -i orbital orbital/orbital --namespace=orbital \
 --set orbital.security.rolesPath=roles \
 --set orbital.security.requireHttps=false \
 --set orbital.project.enabled=false \
+--set orbital.workspace.enabled=true \
 --create-namespace
 ```
 
