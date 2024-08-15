@@ -217,7 +217,7 @@ any users you wish to one of the app roles created in 8.
 Here is an installation command that can be used to install `Orbital` with `Azure AD` integration with a Single Page Application
 registered application.
 ```shell
-helm template orbital orbital/orbital --namespace=orbital \
+helm upgrade -i orbital orbital/orbital --namespace=orbital \
 --set postgresql.enabled=true \
 --set orbital.dbSecretConfig.VYNE_DB_USERNAME=orbital \
 --set orbital.dbSecretConfig.VYNE_DB_PASSWORD=orbital \
