@@ -108,8 +108,6 @@ spec:
             mountPath: /tmp
           - name: workspace-dir
             mountPath: /workspace/gitProjects
-          - name: orbital-config
-            mountPath: /opt/service/config
           - name: orbital-services-config
             mountPath: /opt/service/config/services
           - name: orbital-workspace-config
@@ -162,9 +160,6 @@ spec:
           emptyDir: {}
         - name: workspace-dir
           emptyDir: {}
-        - name: orbital-config
-          configMap:
-            name: {{ template "orbital.fullname" . }}-config
         - name: orbital-workspace-config
           configMap:
         {{- if .Values.orbital.workspace.configSuppliedAsConfigMap }}
