@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "orbital.fullname" . }}-clustering
+data:
+  clustering.yaml: |-
+    hazelcast:
+      jet:
+        enabled: true
+      network:
+        join:
+          multicast:
+            enabled: false
+          kubernetes:
+            enabled: true
+            namespace: {{ .Release.Namespace }}
+            service-name: {{ template "orbital.fullname" . }}-headless
+        rest-api:
+          enabled: true

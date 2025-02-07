@@ -101,6 +101,12 @@ autoscaling/v1
 Default environment variable configuration for orbital containers
 */}}
 {{- define "orbital.defaultEnv" -}}
+{{- if .Values.orbital.clustering.enabled }}
+VYNE_SCHEMA_SERVER_CLUSTERED:
+  value: "true"
+VYNE_HAZELCAST_CONFIGYAMLPATH:
+ value: /opt/service/hc-clustering/clustering.yaml
+{{- end }}
 {{- if .Values.orbital.security.enabled }}
 {{- if .Values.orbital.security.jwksUri }}
 VYNE_SECURITY_OPENIDP_JWKSURI:

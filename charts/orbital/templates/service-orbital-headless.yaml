@@ -1,0 +1,22 @@
+{{- if .Values.orbital.clustering.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "orbital.fullname" . }}-headless
+  labels: {{- include "orbital.selectorLabels" . | nindent 4 }}
+  {{- with $.Values.orbital.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: hazelcast
+      port: 5701
+      targetPort: 5701
+      appProtocol: tcp
+      protocol: TCP
+  selector: {{- include "orbital.selectorLabels" . | nindent 4 }}
+{{- end }}

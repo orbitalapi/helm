@@ -112,6 +112,10 @@ spec:
             mountPath: /opt/service/config/services
           - name: orbital-workspace-config
             mountPath: /opt/service/config/workspace
+          {{- if .Values.orbital.clustering.enabled }}
+          - name: orbital-clustering
+            mountPath: /opt/service/hc-clustering
+          {{- end }}
         {{- if .Values.userDefinedVolumeMounts }}
         {{- toYaml .Values.userDefinedVolumeMounts | nindent 10 }}
         {{- end }}
@@ -160,6 +164,11 @@ spec:
           emptyDir: {}
         - name: workspace-dir
           emptyDir: {}
+        {{- if .Values.orbital.clustering.enabled }}
+        - name: orbital-clustering
+          configMap:
+            name: {{ template "orbital.fullname" . }}-clustering
+        {{- end }}
         - name: orbital-workspace-config
           configMap:
         {{- if .Values.orbital.workspace.configSuppliedAsConfigMap }}
