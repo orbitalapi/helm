@@ -1,3 +1,4 @@
+{{- if eq (include "orbital.clustering" . | trim) "true" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -17,3 +18,4 @@ data:
             service-name: {{ template "orbital.fullname" . }}-headless
         rest-api:
           enabled: true
+{{- end }}

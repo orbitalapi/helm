@@ -101,7 +101,7 @@ autoscaling/v1
 Default environment variable configuration for orbital containers
 */}}
 {{- define "orbital.defaultEnv" -}}
-{{- if .Values.orbital.clustering.enabled }}
+{{- if eq (include "orbital.clustering" . | trim) "true" }}
 VYNE_SCHEMA_SERVER_CLUSTERED:
   value: "true"
 VYNE_HAZELCAST_CONFIGYAMLPATH:
@@ -166,3 +166,18 @@ JAVA_OPTS:
     -XX:MaxRAMPercentage=75
     -XX:MinRAMPercentage=75
 {{- end }}
+
+{{/*
+Calculate if Orbital clustering with Hazelcast should be enabled
+*/}}
+{{- define "orbital.clustering" -}}
+{{- $autoscaling := .Values.orbital.autoscaling.enabled | default false }}
+{{- $minReplicas := (.Values.orbital.autoscaling.minReplicas | default 1 | int) }}
+{{- $replicaCount := (.Values.orbital.replicaCount | default 1 | int) }}
+
+{{- if or (gt $replicaCount 1) (and $autoscaling (gt $minReplicas 1)) }}
+  {{- printf "true" -}}
+{{- else }}
+  {{- printf "false" -}}
+{{- end }}
+{{- end -}}

@@ -112,7 +112,7 @@ spec:
             mountPath: /opt/service/config/services
           - name: orbital-workspace-config
             mountPath: /opt/service/config/workspace
-          {{- if .Values.orbital.clustering.enabled }}
+          {{- if eq (include "orbital.clustering" . | trim) "true" }}
           - name: orbital-clustering
             mountPath: /opt/service/hc-clustering
           {{- end }}
@@ -164,7 +164,7 @@ spec:
           emptyDir: {}
         - name: workspace-dir
           emptyDir: {}
-        {{- if .Values.orbital.clustering.enabled }}
+        {{- if eq (include "orbital.clustering" . | trim) "true" }}
         - name: orbital-clustering
           configMap:
             name: {{ template "orbital.fullname" . }}-clustering

@@ -8,8 +8,6 @@ orbital:
   streamServer:
     enabled: false
 
-  clustering:
-    enabled: false
   #set env variables in pod
   env: []
 
